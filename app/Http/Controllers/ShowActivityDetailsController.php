@@ -16,7 +16,7 @@ class ShowActivityDetailsController extends Controller
         return Inertia::render('detail/index', [
             'data' => $activity,
             ...$this->withLinkProps($request, [
-                'orderUrl' => route('user.order.activity', compact('activity'))
+                'orderUrl' => route('user.order.activity.create', compact('activity'))
             ]),
             ...$this->withAuthProps($request),
             ...$this->withMetaProps([

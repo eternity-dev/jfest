@@ -16,7 +16,7 @@ class ShowCompetitionDetailsController extends Controller
         return Inertia::render('detail/index', [
             'data' => $competition,
             ...$this->withLinkProps($request, [
-                'orderUrl' => route('user.order.competition', compact('competition'))
+                'orderUrl' => route('user.order.competition.create', compact('competition'))
             ]),
             ...$this->withAuthProps($request),
             ...$this->withMetaProps([

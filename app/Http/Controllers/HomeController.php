@@ -2,34 +2,22 @@
 
 namespace App\Http\Controllers;
 
+use App\Enums\EventTypeEnum;
 use App\Models\Activity;
 use App\Models\Competition;
 use Illuminate\Http\Request;
+use Illuminate\Support\Collection;
 use Inertia\Inertia;
 
 class HomeController extends Controller
 {
     public function __invoke(Request $request)
     {
-        $activities = Activity::all()->map(function ($activity) {
-            $activity->type = 'activity';
-            $activity->details_url = route('global.activity.show', compact('activity'));
-            $activity->order_url = route('user.order.activity', compact('activity'));
-
-            return $activity;
-        });
-
-        $competitions = Competition::all()->map(function ($competition) {
-            $competition->type = 'competition';
-            $competition->details_url = route('global.competition.show', compact('competition'));
-            $competition->order_url = route('user.order.competition', compact('competition'));
-
-            return $competition;
-        });
+        $activities = $this->getActivities();
+        $competitions = $this->getCompetitions();
 
         return Inertia::render('home/index', [
-            'activities' => $activities,
-            'competitions' => $competitions,
+            ...compact('activities', 'competitions'),
             ...$this->withLinkProps($request, []),
             ...$this->withAuthProps($request),
             ...$this->withMetaProps([
@@ -39,5 +27,45 @@ class HomeController extends Controller
                 ],
             ])
         ]);
+    }
+
+    private function generateActionsUrl(
+        EventTypeEnum $type,
+        Activity|Competition $event
+    ): array {
+        return [
+            'details_url' => route(sprintf('global.%s.show', $type->value), [
+                $type->value => $event
+            ]),
+            'order_url' => route(sprintf('user.order.%s.create', $type->value), [
+                $type->value => $event
+            ])
+        ];
+    }
+
+    private function getActivities(): Collection
+    {
+        return Activity::all()->map(function ($activity) {
+            $urls = $this->generateActionsUrl(EventTypeEnum::Activity, $activity);
+
+            $activity->type = EventTypeEnum::Activity->value;
+            $activity->details_url = $urls['details_url'];
+            $activity->order_url = $urls['order_url'];
+
+            return $activity;
+        });
+    }
+
+    private function getCompetitions(): Collection
+    {
+        return Competition::all()->map(function ($competition) {
+            $urls = $this->generateActionsUrl(EventTypeEnum::Competition, $competition);
+
+            $competition->type = EventTypeEnum::Competition->value;
+            $competition->details_url = $urls['details_url'];
+            $competition->order_url = $urls['order_url'];
+
+            return $competition;
+        });
     }
 }
