@@ -1,5 +1,10 @@
-import { Link } from "@inertiajs/react";
+import { Link, router } from "@inertiajs/react";
+import axios from "axios";
+
 import { css, styled } from "@/root/stitches.config";
+
+import useAuth from "@/hooks/useAuth";
+import useNavbarLinks from "@/hooks/useNavbarLinks";
 
 import { Button } from "@/components/button";
 import { Grid } from "@/components/grid";
@@ -71,6 +76,21 @@ const ActivityTag = styled("div", {
 
 export default function Activities({ activities, competitions }) {
     const joinedActivities = [...activities, ...competitions];
+
+    const { isAuthenticated } = useAuth();
+    const { authUrl } = useNavbarLinks();
+
+    async function handleRedirectToOrderPage(orderUrl) {
+        if (isAuthenticated) {
+            return router.visit(orderUrl);
+        }
+
+        const response = await axios.get(authUrl.attempt);
+
+        if (response.status === 200) {
+            return router.visit(response.data.meta.redirectUrl);
+        }
+    }
 
     return (
         <Container>
@@ -185,8 +205,13 @@ export default function Activities({ activities, competitions }) {
                                     </Text>
                                 </ActivityBody>
                                 <Link
-                                    href={activity.order_url}
                                     style={{ textDecoration: "none" }}
+                                    onClick={(evt) => {
+                                        evt.preventDefault();
+                                        handleRedirectToOrderPage(
+                                            activity.order_url
+                                        );
+                                    }}
                                 >
                                     <Button color="light" fullWidth>
                                         {isActivity

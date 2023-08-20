@@ -5,6 +5,8 @@ use App\Http\Controllers\Auth\RevokeController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\ShowActivityDetailsController;
 use App\Http\Controllers\ShowCompetitionDetailsController;
+use App\Http\Controllers\User\Order\AddNewRegistrationOrderController;
+use App\Http\Controllers\User\Order\AddNewTicketOrderController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -29,12 +31,10 @@ Route::name('auth.')->prefix('auth')->group(function () {
 
 Route::name('user.')->middleware('auth')->group(function () {
     Route::name('order.')->prefix('orders')->group(function () {
-        Route::get('/{activity:slug}/add', function () {
-            dd('Hello World');
-        })->name('activity');
-        Route::get('/{competition:slug}/add', function () {
-            dd('Hello World');
-        })->name('competition');
+        Route::get('/{activity:slug}/create', [AddNewTicketOrderController::class, 'create'])->name('activity.create');
+        Route::post('/{activity:slug}', [AddNewTicketOrderController::class, 'store'])->name('activity.store');
+        Route::get('/{competition:slug}/create', [AddNewRegistrationOrderController::class, 'create'])->name('competition.create');
+        Route::post('/{competition:slug}', [AddNewRegistrationOrderController::class, 'store'])->name('competition.store');
     });
 });
 
