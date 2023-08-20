@@ -3,6 +3,8 @@
 use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\Auth\RevokeController;
 use App\Http\Controllers\HomeController;
+use App\Http\Controllers\ShowActivityDetailsController;
+use App\Http\Controllers\ShowCompetitionDetailsController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -27,8 +29,12 @@ Route::name('auth.')->prefix('auth')->group(function () {
 
 Route::name('user.')->middleware('auth')->group(function () {
     Route::name('order.')->prefix('orders')->group(function () {
-        Route::get('/{activity:slug}/add', function () {})->name('activity');
-        Route::get('/{competition:slug}/add', function () {})->name('competition');
+        Route::get('/{activity:slug}/add', function () {
+            dd('Hello World');
+        })->name('activity');
+        Route::get('/{competition:slug}/add', function () {
+            dd('Hello World');
+        })->name('competition');
     });
 });
 
@@ -36,10 +42,10 @@ Route::name('global.')->group(function () {
     Route::get('/', HomeController::class)->name('home');
 
     Route::name('activity.')->prefix('activities')->group(function () {
-        Route::get('/{activity:slug}', function () {})->name('show');
+        Route::get('/{activity:slug}', ShowActivityDetailsController::class)->name('show');
     });
 
     Route::name('competition.')->prefix('competitions')->group(function () {
-        Route::get('/{competition:slug}', function () {})->name('show');
+        Route::get('/{competition:slug}', ShowCompetitionDetailsController::class)->name('show');
     });
 });
