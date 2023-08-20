@@ -1,7 +1,6 @@
 import { css } from "@/root/stitches.config";
 
 import { ReactComponent as JFestLogo } from "@/assets/logo.svg";
-import { ReactComponent as JFestLogoText } from "@/assets/logo-text.svg";
 
 import { Text } from "@/components/text";
 
@@ -32,12 +31,6 @@ export default function FooterBio() {
                     className={css({
                         width: 45,
                         "@mobile": { width: 40 },
-                    }).toString()}
-                />
-                <JFestLogoText
-                    className={css({
-                        height: 35,
-                        "@mobile": { height: 30 },
                     }).toString()}
                 />
             </div>

@@ -12,19 +12,14 @@ class HomeController extends Controller
         return Inertia::render('home/index', [
             'events' => [],
             'competitions' => [],
-            'links' => [
-                'authUrl' => [
-                    'attempt' => route('auth.attempt'),
-                    'revoke' => route('auth.revoke')
+            ...$this->withLinkProps($request, []),
+            ...$this->withAuthProps($request),
+            ...$this->withMetaProps([
+                'head' => [
+                    'title' => sprintf('%s - Home', $this->appName),
+                    'description' => sprintf('%s home page', $this->appName)
                 ],
-                'navbarUrl' => [
-                    ['label' => 'Home', 'href' => route('global.home')]
-                ]
-            ],
-            'auth' => [
-                'data' => $request->user(),
-                'isAuthenticated' => !is_null($request->user())
-            ]
+            ])
         ]);
     }
 }

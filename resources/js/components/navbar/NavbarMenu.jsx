@@ -1,6 +1,7 @@
 import { useWindowSize } from "@uidotdev/usehooks";
 import { styled } from "@/root/stitches.config";
 
+import useAuth from "@/hooks/useAuth";
 import useNavbarLinks from "@/hooks/useNavbarLinks";
 
 const List = styled("ul", {
@@ -39,6 +40,7 @@ const ListItemAnchor = styled("a", {
 
 export default function NavbarMenu() {
     const { width } = useWindowSize();
+    const { isAuthenticated } = useAuth();
     const { navbarUrl } = useNavbarLinks();
 
     if (width <= 769) {
@@ -48,13 +50,16 @@ export default function NavbarMenu() {
     return (
         <List>
             <ListItem>|</ListItem>
-            {navbarUrl.map((item, index) => (
-                <ListItem key={index}>
-                    <ListItemAnchor href={item.href}>
-                        {item.label}
-                    </ListItemAnchor>
-                </ListItem>
-            ))}
+            {navbarUrl.map((item, index) =>
+                !item.requireAuthenticated ||
+                (item.requireAuthenticated && isAuthenticated) ? (
+                    <ListItem key={index}>
+                        <ListItemAnchor href={item.href}>
+                            {item.label}
+                        </ListItemAnchor>
+                    </ListItem>
+                ) : null
+            )}
         </List>
     );
 }
