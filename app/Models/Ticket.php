@@ -1,0 +1,40 @@
+<?php
+
+namespace App\Models;
+
+use App\Enums\AttendStatusEnum;
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+
+class Ticket extends Model
+{
+    protected $casts = [
+        'attended_status' => AttendStatusEnum::class,
+        'attended_at' => 'datetime:Y-m-d H:i:s'
+    ];
+
+    protected $fillable = [
+        'activity_id',
+        'order_id',
+        'user_id',
+        'attended_status',
+        'attended_at'
+    ];
+
+    protected $guarded = ['id'];
+
+    public function activity(): BelongsTo
+    {
+        return $this->belongsTo(Activity::class);
+    }
+
+    public function order(): BelongsTo
+    {
+        return $this->belongsTo(Order::class);
+    }
+
+    public function user(): BelongsTo
+    {
+        return $this->belongsTo(User::class, 'user_id', 'uuid');
+    }
+}
