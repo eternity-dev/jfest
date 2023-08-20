@@ -1,5 +1,7 @@
 <?php
 
+use App\Http\Controllers\Auth\LoginController;
+use App\Http\Controllers\Auth\RevokeController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -12,3 +14,21 @@ use Illuminate\Support\Facades\Route;
 | be assigned to the "web" middleware group. Make something great!
 |
 */
+
+Route::name('auth.')->prefix('auth')->group(function () {
+    Route::middleware('guest')->group(function () {
+        Route::get('/attempt', [LoginController::class, 'attempt'])->name('attempt');
+        Route::get('/callback', [LoginController::class, 'callback'])->name('callback');
+    });
+
+    Route::get('/revoke', RevokeController::class)->name('revoke')->middleware('auth');
+});
+
+Route::name('user.')->group(function () {
+});
+
+Route::name('global.')->group(function () {
+    Route::get('/', function () {
+        dd(auth()->user());
+    });
+});
