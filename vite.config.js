@@ -6,6 +6,7 @@ import { fileURLToPath } from "node:url";
 import { defineConfig } from "vite";
 
 export default defineConfig({
+    build: { sourcemap: true },
     resolve: {
         alias: {
             "@/root": fileURLToPath(new URL("./", import.meta.url)),
