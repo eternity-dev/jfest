@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\Auth\RevokeController;
+use App\Http\Controllers\HomeController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -28,7 +29,5 @@ Route::name('user.')->group(function () {
 });
 
 Route::name('global.')->group(function () {
-    Route::get('/', function () {
-        dd(auth()->user());
-    });
+    Route::get('/', HomeController::class)->name('home');
 });
