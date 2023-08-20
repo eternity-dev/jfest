@@ -1,0 +1,30 @@
+# directory
+/node_modules
+/public/build
+/public/hot
+/public/storage
+/storage/*.key
+/vendor
+/.phpunit.cache
+/.fleet
+/.idea
+/.vscode
+
+# environment
+.env
+.env.backup
+.env.production
+
+# cache
+.phpunit.result.cache
+
+# homestead
+Homestead.json
+Homestead.yaml
+
+# misc
+auth.json
+
+# log
+npm-debug.log
+yarn-error.log
