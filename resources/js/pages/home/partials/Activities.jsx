@@ -69,8 +69,8 @@ const ActivityTag = styled("div", {
     },
 });
 
-export default function Activities({ events, competitions }) {
-    const activities = [...events, ...competitions];
+export default function Activities({ activities, competitions }) {
+    const joinedActivities = [...activities, ...competitions];
 
     return (
         <Container>
@@ -112,14 +112,14 @@ export default function Activities({ events, competitions }) {
                     padding: "2rem 0",
                 }}
             >
-                {activities.map((activity) => {
+                {joinedActivities.map((activity) => {
                     const isActivity =
                         activity.type.toLowerCase() === "activity";
 
                     return (
                         <Link
                             key={activity.id}
-                            href={activity.redirect_url}
+                            href={activity.details_url}
                             style={{ textDecoration: "none" }}
                         >
                             <Activity key={activity.id}>
