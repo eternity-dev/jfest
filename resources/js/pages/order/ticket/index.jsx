@@ -1,3 +1,4 @@
+import { router, usePage } from "@inertiajs/react";
 import { css, styled } from "@/root/stitches.config";
 import { generateMetadata } from "@/utils/helper";
 
@@ -8,7 +9,6 @@ import HeaderSection from "./partials/HeaderSection";
 import { Button } from "@/components/button";
 import { TextInput } from "@/components/input";
 import { Text } from "@/components/text";
-import { router } from "@inertiajs/react";
 
 const Container = styled("section", {
     display: "flex",
@@ -22,10 +22,17 @@ const Container = styled("section", {
     "@mobile": { paddingTop: "8rem" },
 });
 
+const InputWrapper = styled("div", {
+    display: "flex",
+    flexDirection: "column",
+    gap: "0.75rem",
+});
+
 export default function OrderTicketPage({ data, links: { submitUrl }, meta }) {
     const isActivity = data.type.toLowerCase() === "activity";
 
     const { inputs, handleChange } = useForm({ amount: 1 });
+    const { errors } = usePage().props;
 
     function handleSubmitTicketsOrder(evt) {
         evt.preventDefault();
@@ -58,18 +65,32 @@ export default function OrderTicketPage({ data, links: { submitUrl }, meta }) {
                             "@mobile": { gap: "1rem" },
                         }).toString()}
                     >
-                        <TextInput
-                            name="amount"
-                            placeholder="Input tickets amount..."
-                            value={inputs.amount}
-                            onChange={handleChange}
-                            css={{ width: "100%", textAlign: "center" }}
-                        />
+                        <InputWrapper>
+                            <TextInput
+                                name="amount"
+                                placeholder="Input tickets amount..."
+                                value={inputs.amount}
+                                onChange={handleChange}
+                                css={{ width: "100%", textAlign: "center" }}
+                            />
+                            {errors.amount && (
+                                <Text
+                                    css={{
+                                        fontSize: "1.25rem",
+                                        color: "#ff3333",
+                                    }}
+                                >
+                                    {errors.amount}
+                                </Text>
+                            )}
+                        </InputWrapper>
                         <Text css={{ fontSize: "1.5rem" }}>Tickets</Text>
                     </div>
                     <Button
                         color="light"
-                        css={{ marginTop: "1rem" }}
+                        css={{
+                            marginTop: "2rem",
+                        }}
                         type="submit"
                         fullWidth
                     >
