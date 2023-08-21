@@ -2,6 +2,7 @@ import { Link } from "@inertiajs/react";
 import { css, styled } from "@/root/stitches.config";
 import { generateMetadata } from "@/utils/helper";
 
+import RegistrationCard from "./partials/RegistrationCard";
 import TicketCard from "./partials/TicketCard";
 
 import { Button } from "@/components/button";
@@ -103,6 +104,13 @@ export default function OrderPage({
                     {data.tickets.length > 0 &&
                         data.tickets.map((ticket) => (
                             <TicketCard key={ticket.id} data={ticket} />
+                        ))}
+                    {data.registrations.length > 0 &&
+                        data.registrations.map((registration) => (
+                            <RegistrationCard
+                                key={registration.id}
+                                data={registration}
+                            />
                         ))}
                 </section>
                 <Link href={checkoutUrl} style={{ textDecoration: "none" }}>

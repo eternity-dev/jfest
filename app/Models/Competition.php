@@ -13,6 +13,8 @@ class Competition extends Model
 
     protected $casts = [
         'price' => 'integer',
+        'use_instagram_field' => 'boolean',
+        'use_nickname_field' => 'boolean',
         'registration_opened_at' => 'datetime:Y-m-d',
         'registration_closed_at' => 'datetime:Y-m-d'
     ];
@@ -24,6 +26,8 @@ class Competition extends Model
         'price_tag',
         'group_url',
         'image_url',
+        'use_instagram_field',
+        'use_nickname_field',
         'registration_opened_at',
         'registration_closed_at'
     ];

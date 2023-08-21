@@ -10,6 +10,7 @@ const BaseTextInput = styled("input", {
     borderBottom: "1.5px solid rgba(255, 255, 255, 0.2)",
     outline: "none",
     color: "$white",
+    letterSpacing: 1.25,
     "&:placeholder": {
         color: "rgba(255, 255, 255, 0.5)",
     },

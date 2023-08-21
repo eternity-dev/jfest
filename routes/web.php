@@ -32,10 +32,11 @@ Route::name('auth.')->prefix('auth')->group(function () {
 
 Route::name('user.')->middleware('auth')->group(function () {
     Route::name('order.')->prefix('orders')->group(function () {
-        Route::get('/{activity:slug}/create', [AddNewTicketOrderController::class, 'create'])->name('activity.create');
-        Route::post('/{activity:slug}', [AddNewTicketOrderController::class, 'store'])->name('activity.store');
-        Route::get('/{competition:slug}/create', [AddNewRegistrationOrderController::class, 'create'])->name('competition.create');
-        Route::post('/{competition:slug}', [AddNewRegistrationOrderController::class, 'store'])->name('competition.store');
+        Route::get('/a/{activity:slug}/create', [AddNewTicketOrderController::class, 'create'])->name('activity.create');
+        Route::post('/a/{activity:slug}', [AddNewTicketOrderController::class, 'store'])->name('activity.store');
+
+        Route::get('/c/{competition:slug}/create', [AddNewRegistrationOrderController::class, 'create'])->name('competition.create');
+        Route::post('/c/{competition:slug}', [AddNewRegistrationOrderController::class, 'store'])->name('competition.store');
 
         Route::get('/', OrderController::class)->name('index');
         Route::get('/checkout', function () {})->name('checkout');

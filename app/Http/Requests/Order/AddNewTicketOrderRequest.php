@@ -6,7 +6,7 @@ use App\Enums\RoleTypeEnum;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Support\Facades\Auth;
 
-class AddNewOrderRequest extends FormRequest
+class AddNewTicketOrderRequest extends FormRequest
 {
     protected $stopOnFirstFailure = true;
 

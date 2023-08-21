@@ -1,4 +1,6 @@
+import { useEffect, useState } from "react";
 import { useWindowSize } from "@uidotdev/usehooks";
+
 import { styled } from "@/root/stitches.config";
 
 import useAuth from "@/hooks/useAuth";
@@ -49,6 +51,11 @@ export default function NavbarMenu() {
     const { width } = useWindowSize();
     const { isAuthenticated } = useAuth();
     const { navbarUrl } = useNavbarLinks();
+    const [currentUrl, setCurrentUrl] = useState();
+
+    useEffect(() => {
+        setCurrentUrl(window.location.href.replace(/\/$/, ""));
+    }, [window.location.href]);
 
     if (width <= 769) {
         return null;
@@ -63,10 +70,7 @@ export default function NavbarMenu() {
                     <ListItem key={index}>
                         <ListItemAnchor
                             href={item.href}
-                            isActive={
-                                window.location.href.replace(/\/$/, "") ==
-                                item.href
-                            }
+                            isActive={currentUrl == item.href}
                         >
                             {item.label}
                         </ListItemAnchor>

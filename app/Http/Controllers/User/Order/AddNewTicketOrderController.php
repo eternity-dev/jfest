@@ -4,7 +4,7 @@ namespace App\Http\Controllers\User\Order;
 
 use App\Enums\EventTypeEnum;
 use App\Http\Controllers\Controller;
-use App\Http\Requests\Order\AddNewOrderRequest;
+use App\Http\Requests\Order\AddNewTicketOrderRequest;
 use App\Models\Activity;
 use App\Services\Order\OrderService;
 use Illuminate\Http\Request;
@@ -33,7 +33,7 @@ class AddNewTicketOrderController extends Controller
     }
 
     public function store(
-        AddNewOrderRequest $request,
+        AddNewTicketOrderRequest $request,
         Activity $activity,
         OrderService $orderService
     ) {
