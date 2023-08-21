@@ -4,6 +4,7 @@ namespace App\Http\Controllers\User\Order;
 
 use App\Enums\OrderStatusEnum;
 use App\Http\Controllers\Controller;
+use App\Models\Activity;
 use App\Services\Order\OrderService;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
@@ -12,6 +13,7 @@ class OrderController extends Controller
 {
     public function __invoke(Request $request, OrderService $orderService)
     {
+        $activity = Activity::where('slug', 'japanese-festival-7')->first();
         $order = $request->user()->order()->where([
             ['status', OrderStatusEnum::Pending->value],
             ['expired_at', '>', now()]
@@ -26,7 +28,8 @@ class OrderController extends Controller
         return Inertia::render('order/index', [
             'data' => $order,
             ...$this->withLinkProps($request, [
-                'checkoutUrl' => route('user.order.checkout')
+                'checkoutUrl' => route('user.order.checkout'),
+                'orderTicketUrl' => route('user.order.activity.create', compact('activity'))
             ]),
             ...$this->withAuthProps($request),
             ...$this->withMetaProps([

@@ -13,12 +13,12 @@ class OrderService
         return (new CreateNewTicketsOrderService())->handle($user, $activity, $amount);
     }
 
-    public function remapTicketOrder(Order &$order)
+    public function remapTicketOrder(Order|null &$order)
     {
         return (new RemapTicketOrderService())->handle($order);
     }
 
-    public function remapRegistrationOrder(Order &$order)
+    public function remapRegistrationOrder(Order|null &$order)
     {
         return (new RemapRegistrationOrderService())->handle($order);
     }

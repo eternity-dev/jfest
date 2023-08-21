@@ -6,8 +6,12 @@ use App\Models\Order;
 
 class RemapTicketOrderService
 {
-    public function handle(Order &$order)
+    public function handle(Order|null &$order)
     {
+        if (is_null($order)) {
+            return;
+        }
+
         $order->tickets->map(function ($ticket) {
             $date = $ticket->activity->date;
             $ticket->activity->dateStr = $date->diffForHumans();
