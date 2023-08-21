@@ -88,7 +88,7 @@ export default function Activities({ activities, competitions }) {
         const response = await axios.get(authUrl.attempt);
 
         if (response.status === 200) {
-            return router.visit(response.data.meta.redirectUrl);
+            return window.location.replace(response.data.meta.redirectUrl);
         }
     }
 

@@ -19,7 +19,6 @@ class LoginController extends Controller
             ? response()->json([
                 'meta' => [
                     'redirectUrl' => $driver
-                        ->stateless()
                         ->redirect()
                         ->getTargetUrl()
                 ]
