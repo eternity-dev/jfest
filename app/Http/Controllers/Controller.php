@@ -43,7 +43,7 @@ class Controller extends BaseController
                     ],
                     [
                         'label' => 'My Orders',
-                        'href' => route('global.home'),
+                        'href' => route('user.order.index'),
                         'requireAuthenticated' => true
                     ],
                     [

@@ -36,6 +36,13 @@ const ListItemAnchor = styled("a", {
         color: "$secondary",
         cursor: "pointer",
     },
+    variants: {
+        isActive: {
+            true: {
+                color: "$secondary",
+            },
+        },
+    },
 });
 
 export default function NavbarMenu() {
@@ -54,7 +61,13 @@ export default function NavbarMenu() {
                 !item.requireAuthenticated ||
                 (item.requireAuthenticated && isAuthenticated) ? (
                     <ListItem key={index}>
-                        <ListItemAnchor href={item.href}>
+                        <ListItemAnchor
+                            href={item.href}
+                            isActive={
+                                window.location.href.replace(/\/$/, "") ==
+                                item.href
+                            }
+                        >
                             {item.label}
                         </ListItemAnchor>
                     </ListItem>

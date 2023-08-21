@@ -38,6 +38,7 @@ Route::name('user.')->middleware('auth')->group(function () {
         Route::post('/{competition:slug}', [AddNewRegistrationOrderController::class, 'store'])->name('competition.store');
 
         Route::get('/', OrderController::class)->name('index');
+        Route::get('/checkout', function () {})->name('checkout');
     });
 });
 
