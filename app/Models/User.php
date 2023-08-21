@@ -5,6 +5,7 @@ namespace App\Models;
 use App\Enums\RoleTypeEnum;
 use App\Traits\Uuid;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 
@@ -31,6 +32,11 @@ class User extends Authenticatable
         'password',
         'remember_token'
     ];
+
+    public function order(): HasOne
+    {
+        return $this->hasOne(Order::class, 'user_id', 'uuid')->latestOfMany();
+    }
 
     public function orders(): HasMany
     {

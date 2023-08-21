@@ -7,6 +7,7 @@ use App\Http\Controllers\ShowActivityDetailsController;
 use App\Http\Controllers\ShowCompetitionDetailsController;
 use App\Http\Controllers\User\Order\AddNewRegistrationOrderController;
 use App\Http\Controllers\User\Order\AddNewTicketOrderController;
+use App\Http\Controllers\User\Order\OrderController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -35,6 +36,8 @@ Route::name('user.')->middleware('auth')->group(function () {
         Route::post('/{activity:slug}', [AddNewTicketOrderController::class, 'store'])->name('activity.store');
         Route::get('/{competition:slug}/create', [AddNewRegistrationOrderController::class, 'create'])->name('competition.create');
         Route::post('/{competition:slug}', [AddNewRegistrationOrderController::class, 'store'])->name('competition.store');
+
+        Route::get('/', OrderController::class)->name('index');
     });
 });
 
