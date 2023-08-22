@@ -19,7 +19,7 @@ class OrderController extends Controller
             ['expired_at', '>', now()]
         ])->with([
             'tickets' => ['activity:id,name,slug,price,date'],
-            'registrations' => ['competition:id,name,slug,price,group_url,registration_closed_at']
+            'registrations' => ['competition']
         ])->first();
 
         $orderService->remapTicketOrder($order);
@@ -28,7 +28,7 @@ class OrderController extends Controller
         return Inertia::render('order/index', [
             'data' => $order,
             ...$this->withLinkProps($request, [
-                'checkoutUrl' => route('user.order.checkout'),
+                'checkoutUrl' => !is_null($order) ? route('user.checkout.index', compact('order')) : null,
                 'orderTicketUrl' => route('user.order.activity.create', compact('activity'))
             ]),
             ...$this->withAuthProps($request),
