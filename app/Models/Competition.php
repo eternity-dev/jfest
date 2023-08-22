@@ -13,8 +13,12 @@ class Competition extends Model
 
     protected $casts = [
         'price' => 'integer',
+        'with_ticket' => 'boolean',
         'use_instagram_field' => 'boolean',
         'use_nickname_field' => 'boolean',
+        'use_multi_participant' => 'boolean',
+        'min_participants' => 'integer',
+        'max_participants' => 'integer',
         'registration_opened_at' => 'datetime:Y-m-d',
         'registration_closed_at' => 'datetime:Y-m-d'
     ];
@@ -26,8 +30,12 @@ class Competition extends Model
         'price_tag',
         'group_url',
         'image_url',
+        'with_ticket',
         'use_instagram_field',
         'use_nickname_field',
+        'use_multi_participant',
+        'min_participants',
+        'max_participants',
         'registration_opened_at',
         'registration_closed_at'
     ];

@@ -9,6 +9,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 class Ticket extends Model
 {
     protected $casts = [
+        'price' => 'integer',
         'attended_status' => AttendStatusEnum::class,
         'attended_at' => 'datetime:Y-m-d H:i:s'
     ];
@@ -17,6 +18,7 @@ class Ticket extends Model
         'activity_id',
         'order_id',
         'user_id',
+        'price',
         'attended_status',
         'attended_at'
     ];

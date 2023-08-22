@@ -4,13 +4,19 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 
 class Registration extends Model
 {
+    protected $casts = [
+        'price' => 'integer',
+    ];
+
     protected $fillable = [
         'competition_id',
         'order_id',
         'user_id',
+        'price',
         'email',
         'name',
         'phone',
@@ -28,6 +34,11 @@ class Registration extends Model
     public function order(): BelongsTo
     {
         return $this->belongsTo(Order::class);
+    }
+
+    public function team(): HasOne
+    {
+        return $this->hasOne(Team::class);
     }
 
     public function user(): BelongsTo
