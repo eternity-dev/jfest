@@ -28,14 +28,18 @@ class DatabaseSeeder extends Seeder
         ]);
 
         $competition = new Competition([
-            'name' => 'Costume Walk',
-            'description' => 'Competition where peoples compete for costume walk',
+            'name' => 'Wall Magazine',
+            'description' => 'Competition where peoples compete making awesome wall magazines',
             'price' => 50000,
             'price_tag' => 'pre-sale',
-            'group_url' => 'https://web.whatsapp.com/costume-walk',
-            'image_url' => 'https://image.google.com/costume-walk.png',
-            'use_instagram_field' => true,
-            'use_nickname_field' => true,
+            'group_url' => 'https://web.whatsapp.com/wall-magazine',
+            'image_url' => 'https://image.google.com/wall-magazine.png',
+            'with_ticket' => true,
+            'use_instagram_field' => false,
+            'use_nickname_field' => false,
+            'use_multi_participant' => true,
+            'min_participants' => 0,
+            'max_participants' => 4,
             'registration_opened_at' => Carbon::now()->addDay(),
             'registration_closed_at' => Carbon::now()->addDay()->addMonths(2),
         ]);
