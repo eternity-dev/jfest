@@ -5,6 +5,7 @@ import { styled } from "@/root/stitches.config";
 import { InputOuterWrapper, InputWrapper } from "../shared/InputWrapper";
 import ErrorMessage from "../shared/ErrorMessage";
 
+import { Button } from "@/components/button";
 import { TextInput } from "@/components/input";
 import { Text } from "@/components/text";
 
@@ -20,7 +21,20 @@ export default function TeamSection({
     errors,
     useInstagramField,
     useNicknameField,
+    maxParticipants,
 }) {
+    function handleAddTeamMember(handlePush) {
+        return function () {
+            handlePush({
+                name: "",
+                instagram: null,
+                nickname: null,
+            });
+
+            console.log(values);
+        };
+    }
+
     return (
         <Container>
             <header style={{ paddingTop: "1rem" }}>
@@ -33,8 +47,8 @@ export default function TeamSection({
                     gap: "0.75rem",
                 }}
             >
-                <FieldArray name="members">
-                    {() => (
+                <FieldArray name="teamMembers">
+                    {({ push }) => (
                         <>
                             {values.teamMembers.length > 0 &&
                                 values.teamMembers.map((_, idx) => (
@@ -71,7 +85,6 @@ export default function TeamSection({
                                                 </InputOuterWrapper>
                                             )}
                                         </Field>
-
                                         {useInstagramField && (
                                             <Field
                                                 name={`teamMembers.${idx}.instagram`}
@@ -152,6 +165,16 @@ export default function TeamSection({
                                         )}
                                     </div>
                                 ))}
+                            {values.teamMembers.length !== maxParticipants && (
+                                <Button
+                                    type="button"
+                                    color="light"
+                                    onClick={handleAddTeamMember(push)}
+                                    fullWidth
+                                >
+                                    Add Team Member
+                                </Button>
+                            )}
                         </>
                     )}
                 </FieldArray>

@@ -217,6 +217,7 @@ export default function OrderRegistrationPage({
                                     <TeamSection
                                         errors={errors}
                                         values={values}
+                                        maxParticipants={data.max_participants}
                                         useInstagramField={
                                             data.use_instagram_field
                                         }
