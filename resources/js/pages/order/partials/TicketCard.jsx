@@ -50,7 +50,7 @@ export default function TicketCard({ data }) {
                             "@mobile": { fontSize: "1.25rem" },
                         }}
                     >
-                        Rp {data.activity.price.toLocaleString("id-ID")}
+                        Rp {data.price.toLocaleString("id-ID")}
                     </Text>
                 )}
                 {!data.uuid && (

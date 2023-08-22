@@ -50,7 +50,7 @@ export default function RegistrationCard({ data }) {
                             "@mobile": { fontSize: "1.25rem" },
                         }}
                     >
-                        Rp {data.competition.price.toLocaleString("id-ID")}
+                        Rp {data.price.toLocaleString("id-ID")}
                     </Text>
                 )}
                 {!data.uuid && (
