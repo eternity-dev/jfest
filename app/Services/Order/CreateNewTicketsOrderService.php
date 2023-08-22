@@ -20,7 +20,9 @@ class CreateNewTicketsOrderService
                 ]);
 
                 $user->orders()->save($order);
-                $order->tickets()->saveMany($this->generateTickets($user, $activity, $amount));
+                $order->tickets()->saveMany(
+                    $this->generateTickets($user, $activity, $amount)
+                );
             } else {
                 $order = $user->order()->where([
                     ['status', OrderStatusEnum::Pending->value],
@@ -33,9 +35,16 @@ class CreateNewTicketsOrderService
                     ]);
 
                     $user->orders()->save($order);
-                    $order->tickets()->saveMany($this->generateTickets($user, $activity, $amount));
+                    $order->tickets()->saveMany(
+                        $this->generateTickets($user, $activity, $amount)
+                    );
                 } else {
-                    $order->tickets()->saveMany($this->generateTickets($user, $activity, $amount));
+                    $order->total_price = $order->total_price + ($activity->price * $amount);
+
+                    $order->save();
+                    $order->tickets()->saveMany(
+                        $this->generateTickets($user, $activity, $amount)
+                    );
                 }
             }
 
@@ -52,7 +61,8 @@ class CreateNewTicketsOrderService
         for ($i = 0; $i < $amount; $i++) {
             $tickets->push(new Ticket([
                 'activity_id' => $activity->id,
-                'user_id' => $user->uuid
+                'user_id' => $user->uuid,
+                'price' => $activity->price
             ]));
         }
 
