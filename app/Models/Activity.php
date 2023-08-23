@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Enums\EventTypeEnum;
 use App\Traits\Slug;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
@@ -29,6 +30,13 @@ class Activity extends Model
     ];
 
     protected $guarded = ['id'];
+
+    protected static function booted()
+    {
+        static::retrieved(function (Model $model) {
+            $model->setAttribute('type', EventTypeEnum::Activity->value);
+        });
+    }
 
     public function tickets(): HasMany
     {

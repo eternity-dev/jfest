@@ -33,11 +33,6 @@ class User extends Authenticatable
         'remember_token'
     ];
 
-    public function order(): HasOne
-    {
-        return $this->hasOne(Order::class, 'user_id', 'uuid')->latestOfMany();
-    }
-
     public function orders(): HasMany
     {
         return $this->hasMany(Order::class, 'user_id', 'uuid');

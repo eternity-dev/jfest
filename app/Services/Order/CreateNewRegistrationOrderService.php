@@ -29,10 +29,10 @@ class CreateNewRegistrationOrderService
                 $user->orders()->save($order);
                 $this->createRegistration($user, $order, $competition, $data);
             } else {
-                $order = $user->order()->where([
+                $order = $user->orders()->where([
                     ['status', OrderStatusEnum::Pending->value],
                     ['expired_at', '>', now()]
-                ])->first();
+                ])->latest()->first();
 
                 if (is_null($order)) {
                     $order = new Order([

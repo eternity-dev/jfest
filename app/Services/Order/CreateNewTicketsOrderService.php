@@ -24,10 +24,10 @@ class CreateNewTicketsOrderService
                     $this->generateTickets($user, $activity, $amount)
                 );
             } else {
-                $order = $user->order()->where([
+                $order = $user->orders()->where([
                     ['status', OrderStatusEnum::Pending->value],
                     ['expired_at', '>', now()]
-                ])->first();
+                ])->latest()->first();
 
                 if (is_null($order)) {
                     $order = new Order([
