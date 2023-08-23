@@ -1,6 +1,6 @@
 import { FieldArray, Field } from "formik";
 
-import { styled } from "@/root/stitches.config";
+import { css, styled } from "@/root/stitches.config";
 
 import { InputOuterWrapper, InputWrapper } from "../shared/InputWrapper";
 import ErrorMessage from "../shared/ErrorMessage";
@@ -16,6 +16,77 @@ const Container = styled("div", {
     width: "100%",
 });
 
+const FieldsWrapper = styled("div", {
+    display: "flex",
+    flexDirection: "column",
+    marginBottom: "1rem",
+});
+
+const RemoveButton = styled("button", {
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "center",
+    padding: "0 1.5rem",
+    backgroundColor: "transparent",
+    border: "none",
+    outline: "none",
+    fontFamily: "$main",
+    letterSpacing: 2,
+    cursor: "pointer",
+    color: "$white",
+    "&:hover": {
+        color: "$secondary",
+    },
+    "@desktop": {
+        height: "$button-desktop-height",
+        fontSize: "$normal-desktop",
+    },
+    "@laptop": {
+        height: "$button-laptop-height",
+        fontSize: "$normal-laptop",
+    },
+    "@tablet": {
+        height: "$button-tablet-height",
+        fontSize: "$normal-tablet",
+    },
+    "@mobile": {
+        height: "$button-mobile-height",
+        fontSize: "$normal-mobile",
+    },
+});
+
+const InputPlain = function ({ errors, idx, name, field, ...props }) {
+    return (
+        <InputOuterWrapper>
+            <InputWrapper>
+                <TextInput css={{ width: "100%" }} {...props} {...field} />
+                {"teamMembers" in errors && errors.teamMembers[idx]?.[name] && (
+                    <ErrorMessage msg={errors.teamMembers[idx][name]} />
+                )}
+            </InputWrapper>
+        </InputOuterWrapper>
+    );
+};
+
+const InputWithIcon = function ({ errors, icon, idx, name, field, ...props }) {
+    return (
+        <InputOuterWrapper
+            css={{
+                gridTemplateColumns: "auto auto",
+                gap: "0.25rem",
+            }}
+        >
+            <Text>{icon}</Text>
+            <InputWrapper>
+                <TextInput css={{ width: "100%" }} {...props} {...field} />
+                {"teamMembers" in errors && errors.teamMembers[idx]?.[name] && (
+                    <ErrorMessage msg={errors.teamMembers[idx][name]} />
+                )}
+            </InputWrapper>
+        </InputOuterWrapper>
+    );
+};
+
 export default function TeamSection({
     values,
     errors,
@@ -30,8 +101,6 @@ export default function TeamSection({
                 instagram: null,
                 nickname: null,
             });
-
-            console.log(values);
         };
     }
 
@@ -48,121 +117,70 @@ export default function TeamSection({
                 }}
             >
                 <FieldArray name="teamMembers">
-                    {({ push }) => (
+                    {({ push, remove }) => (
                         <>
                             {values.teamMembers.length > 0 &&
                                 values.teamMembers.map((_, idx) => (
                                     <div
                                         key={idx}
-                                        style={{ marginBottom: "1rem" }}
+                                        className={css({
+                                            display: "grid",
+                                            gap: "1.5rem",
+                                            gridTemplateColumns: "1fr auto",
+                                        }).toString()}
                                     >
-                                        <Field name={`teamMembers.${idx}.name`}>
-                                            {({ field }) => (
-                                                <InputOuterWrapper>
-                                                    <InputWrapper>
-                                                        <TextInput
-                                                            placeholder="Type your name here..."
-                                                            css={{
-                                                                width: "100%",
-                                                            }}
-                                                            {...field}
+                                        <FieldsWrapper>
+                                            <Field
+                                                name={`teamMembers.${idx}.name`}
+                                            >
+                                                {({ field }) => (
+                                                    <InputPlain
+                                                        name="name"
+                                                        placeholder="Type your name here"
+                                                        errors={errors}
+                                                        field={field}
+                                                        idx={idx}
+                                                    />
+                                                )}
+                                            </Field>
+                                            {useInstagramField && (
+                                                <Field
+                                                    name={`teamMembers.${idx}.instagram`}
+                                                >
+                                                    {({ field }) => (
+                                                        <InputWithIcon
+                                                            icon="@"
+                                                            name="instagram"
+                                                            placeholder="Type your instagram username..."
+                                                            errors={errors}
+                                                            field={field}
+                                                            idx={idx}
                                                         />
-                                                        {"teamMembers" in
-                                                            errors &&
-                                                            errors.teamMembers[
-                                                                idx
-                                                            ]?.name && (
-                                                                <ErrorMessage
-                                                                    msg={
-                                                                        errors
-                                                                            .teamMembers[
-                                                                            idx
-                                                                        ].name
-                                                                    }
-                                                                />
-                                                            )}
-                                                    </InputWrapper>
-                                                </InputOuterWrapper>
+                                                    )}
+                                                </Field>
                                             )}
-                                        </Field>
-                                        {useInstagramField && (
-                                            <Field
-                                                name={`teamMembers.${idx}.instagram`}
-                                            >
-                                                {({ field }) => (
-                                                    <InputOuterWrapper
-                                                        css={{
-                                                            gridTemplateColumns:
-                                                                "1.5rem auto",
-                                                            gap: "0.25rem",
-                                                        }}
-                                                    >
-                                                        <Text>@</Text>
-                                                        <InputWrapper>
-                                                            <TextInput
-                                                                placeholder="Type your instagram username here..."
-                                                                css={{
-                                                                    width: "100%",
-                                                                }}
-                                                                {...field}
-                                                            />
-                                                            {"teamMembers" in
-                                                                errors &&
-                                                                errors
-                                                                    .teamMembers[
-                                                                    idx
-                                                                ]
-                                                                    ?.instagram && (
-                                                                    <ErrorMessage
-                                                                        msg={
-                                                                            errors
-                                                                                .teamMembers[
-                                                                                idx
-                                                                            ]
-                                                                                .instagram
-                                                                        }
-                                                                    />
-                                                                )}
-                                                        </InputWrapper>
-                                                    </InputOuterWrapper>
-                                                )}
-                                            </Field>
-                                        )}
-                                        {useNicknameField && (
-                                            <Field
-                                                name={`teamMembers.${idx}.nickname`}
-                                            >
-                                                {({ field }) => (
-                                                    <InputOuterWrapper>
-                                                        <InputWrapper>
-                                                            <TextInput
-                                                                placeholder="Type your nickname here..."
-                                                                css={{
-                                                                    width: "100%",
-                                                                }}
-                                                                {...field}
-                                                            />
-                                                            {"teamMembers" in
-                                                                errors &&
-                                                                errors
-                                                                    .teamMembers[
-                                                                    idx
-                                                                ]?.nickname && (
-                                                                    <ErrorMessage
-                                                                        msg={
-                                                                            errors
-                                                                                .teamMembers[
-                                                                                idx
-                                                                            ]
-                                                                                .nickname
-                                                                        }
-                                                                    />
-                                                                )}
-                                                        </InputWrapper>
-                                                    </InputOuterWrapper>
-                                                )}
-                                            </Field>
-                                        )}
+                                            {useNicknameField && (
+                                                <Field
+                                                    name={`teamMembers.${idx}.nickname`}
+                                                >
+                                                    {({ field }) => (
+                                                        <InputPlain
+                                                            name="nickname"
+                                                            placeholder="Type your desired nickname..."
+                                                            errors={errors}
+                                                            field={field}
+                                                            idx={idx}
+                                                        />
+                                                    )}
+                                                </Field>
+                                            )}
+                                        </FieldsWrapper>
+                                        <RemoveButton
+                                            type="button"
+                                            onClick={() => remove(idx)}
+                                        >
+                                            Remove
+                                        </RemoveButton>
                                     </div>
                                 ))}
                             {values.teamMembers.length !== maxParticipants && (

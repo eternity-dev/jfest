@@ -194,25 +194,26 @@ export default function OrderRegistrationPage({
                                         </InputWrapper>
                                     </InputOuterWrapper>
                                 )}
-                                {data.use_multi_participant && (
-                                    <InputOuterWrapper>
-                                        <InputWrapper>
-                                            <TextInput
-                                                name="teamName"
-                                                placeholder="Type your team name here..."
-                                                value={values.teamName}
-                                                onChange={handleChange}
-                                                onBlur={handleBlur}
-                                                css={{ width: "100%" }}
-                                            />
-                                            {errors.teamName && (
-                                                <ErrorMessage
-                                                    msg={errors.teamName}
+                                {data.use_multi_participant &&
+                                    values.teamMembers.length > 0 && (
+                                        <InputOuterWrapper>
+                                            <InputWrapper>
+                                                <TextInput
+                                                    name="teamName"
+                                                    placeholder="Type your team name here..."
+                                                    value={values.teamName}
+                                                    onChange={handleChange}
+                                                    onBlur={handleBlur}
+                                                    css={{ width: "100%" }}
                                                 />
-                                            )}
-                                        </InputWrapper>
-                                    </InputOuterWrapper>
-                                )}
+                                                {errors.teamName && (
+                                                    <ErrorMessage
+                                                        msg={errors.teamName}
+                                                    />
+                                                )}
+                                            </InputWrapper>
+                                        </InputOuterWrapper>
+                                    )}
                                 {data.use_multi_participant && (
                                     <TeamSection
                                         errors={errors}
