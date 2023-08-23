@@ -15,7 +15,7 @@ const Container = styled("div", {
     backgroundColor: "rgba(255, 255, 255, 0.05)",
 });
 
-export default function DetailCard({ totalPrice, nextPageUrl }) {
+export default function DetailCard({ totalPrice, redirectToPaymentUrl }) {
     return (
         <Container>
             <div
@@ -72,11 +72,9 @@ export default function DetailCard({ totalPrice, nextPageUrl }) {
                     </li>
                 </ul>
             </div>
-            <Link href={nextPageUrl} style={{ textDecoration: "none" }}>
-                <Button color="light" fullWidth>
-                    Continue To Payment
-                </Button>
-            </Link>
+            <Button color="light" as="a" href={redirectToPaymentUrl} fullWidth>
+                Continue To Payment
+            </Button>
         </Container>
     );
 }
