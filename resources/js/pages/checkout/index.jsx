@@ -43,7 +43,11 @@ function flatAndGroupObjectsBy(array, identifier) {
     }, {});
 }
 
-export default function CheckoutPage({ data, links: { nextPageUrl }, meta }) {
+export default function CheckoutPage({
+    data,
+    links: { redirectToPaymentUrl },
+    meta,
+}) {
     const tickets = Object.entries(
         flatAndGroupObjectsBy(data.tickets, "price")
     );
@@ -107,7 +111,7 @@ export default function CheckoutPage({ data, links: { nextPageUrl }, meta }) {
                     >
                         <DetailCard
                             totalPrice={data.total_price}
-                            nextPageUrl={nextPageUrl}
+                            redirectToPaymentUrl={redirectToPaymentUrl}
                         />
                     </section>
                 </div>

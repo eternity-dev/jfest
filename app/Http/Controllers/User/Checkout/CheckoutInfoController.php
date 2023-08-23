@@ -13,14 +13,14 @@ class CheckoutInfoController extends Controller
     public function __invoke(Request $request, Order $order)
     {
         $order = $order->where('id', $order->id)->with([
-            'tickets' => ['activity'],
+            'tickets' => ['activity:id,name,slug,price'],
             'registrations' => ['competition:id,name,slug,price']
         ])->first();
 
         return Inertia::render('checkout/index', [
             'data' => $order,
             ...$this->withLinkProps($request, [
-                'nextPageUrl' => route('user.checkout.payment', compact('order'))
+                'redirectToPaymentUrl' => route('user.payment.redirect', compact('order'))
             ]),
             ...$this->withAuthProps($request),
             ...$this->withMetaProps([

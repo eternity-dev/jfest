@@ -15,6 +15,7 @@ return new class extends Migration
     {
         $statuses = [
             PaymentStatusEnum::Canceled->value,
+            PaymentStatusEnum::Challenge->value,
             PaymentStatusEnum::Expired->value,
             PaymentStatusEnum::Failed->value,
             PaymentStatusEnum::Pending->value,
@@ -25,7 +26,7 @@ return new class extends Migration
             $table->id();
             $table->uuid();
             $table->foreignIdFor(Order::class);
-            $table->string('transaction_id')->unique();
+            $table->string('transaction_id')->unique()->nullable();
             $table->float('amount');
             $table->float('fee')->default(0.0);
             $table->string('link');

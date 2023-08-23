@@ -52,6 +52,6 @@ class AddNewTicketOrderController extends Controller
             'Internal server error'
         );
 
-        return to_route('user.order.index');
+        return Inertia::location(route('user.order.index'));
     }
 }
