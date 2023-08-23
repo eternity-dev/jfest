@@ -16,12 +16,7 @@ return new class extends Migration
             $table->id();
             $table->foreignIdFor(Registration::class)->constrained()->cascadeOnDelete();
             $table->string('slug', 100)->unique();
-            $table->string('name', 100);
-            $table->string('leader_email', 100)->comment('Auto-sync with the user data');
-            $table->string('leader_name', 100)->comment('Auto-sync with the user data');
-            $table->string('leader_phone', 20)->comment('Auto-sync with th user data');
-            $table->string('leader_instagram', 50)->nullable();
-            $table->string('leader_nickname', 50)->nullable();
+            $table->string('name');
             $table->smallInteger('number_of_members');
             $table->timestamps();
         });

@@ -14,11 +14,6 @@ class Team extends Model
     protected $fillable = [
         'registration_id',
         'name',
-        'leader_email',
-        'leader_name',
-        'leader_phone',
-        'leader_instagram',
-        'leader_nickname',
         'number_of_members',
     ];
 

@@ -14,6 +14,10 @@ use App\Models\User;
 
 class CreateNewRegistrationOrderService
 {
+    public const INDIVIDUAL_COUNT = 1;
+    public const TICKET_SLUG = 'japanese-festival-7';
+    public const PRICE_OF_FREE_PASS = 0;
+
     public function handle(User $user, Competition $competition, array $data)
     {
         try {
@@ -45,7 +49,6 @@ class CreateNewRegistrationOrderService
 
             return true;
         } catch (\Throwable $exception) {
-            dd($exception);
             return false;
         }
     }
@@ -70,55 +73,50 @@ class CreateNewRegistrationOrderService
         $order->registrations()->save($registration);
 
         if ($competition->use_multi_participant) {
-            $teamMembers = [];
-            $team = new Team([
-                'name' => $data['teamName'],
-                'leader_email' => $registration->email,
-                'leader_name' => $registration->name,
-                'leader_phone' => $registration->phone,
-                'leader_instagram' => $registration->instagram,
-                'leader_nickname' => $registration->nickname,
-                'number_of_members' => count($data['teamMembers'])
-            ]);
+            $hasTeam = !is_null($data['teamName']) && count($data['teamMembers']) > 0;
 
-            $registration->team()->save($team);
-
-            for ($i = 0; $i < $team->number_of_members; $i++) {
-                $teamMembers[] = new TeamMember([
-                    'name' => $data['teamMembers'][$i]['name'],
-                    'instagram' => $data['teamMembers'][$i]['instagram'],
-                    'nickname' => $data['teamMembers'][$i]['nickname'],
+            if ($hasTeam) {
+                $teamMembers = [];
+                $team = new Team([
+                    'name' => $data['teamName'],
+                    'number_of_members' => count($data['teamMembers'])
                 ]);
+
+                for ($i = 0; $i < $team->number_of_members; $i++) {
+                    $teamMembers[] = new TeamMember([
+                        'name' => $data['teamMembers'][$i]['name'],
+                        'instagram' => $data['teamMembers'][$i]['instagram'],
+                        'nickname' => $data['teamMembers'][$i]['nickname'],
+                    ]);
+                }
+
+                $registration->team()->save($team);
+                $team->members()->saveMany($teamMembers);
             }
-
-            $team->members()->saveMany($teamMembers);
-
-            // multiple free pass ticket creation
-            if ($competition->with_ticket) $this->createTickets(
-                $user,
-                $order,
-                $team->number_of_members + 1
-            );
         }
 
-        // free pass creation
-        if ($competition->with_ticket && !$competition->use_multi_participant) {
-            $this->createTickets($user, $order, 1);
-        }
+        // free pass ticket creation, 1 is for the leader
+        if ($competition->with_ticket) $this->createTickets(
+            $user,
+            $order,
+            $hasTeam
+                ? $team->number_of_members + self::INDIVIDUAL_COUNT
+                : self::INDIVIDUAL_COUNT
+        );
 
         if ($order->isDirty('total_price')) $order->save();
     }
 
     private function createTickets(User $user, Order $order, int $amount)
     {
-        $activity = Activity::where('slug', 'japanese-festival-7')->first();
+        $activity = Activity::where('slug', self::TICKET_SLUG)->first();
         $tickets = [];
 
         for ($i = 0; $i < $amount; $i++) {
             $tickets[] = new Ticket([
                 'activity_id' => $activity->id,
                 'user_id' => $user->uuid,
-                'price' => 0
+                'price' => self::PRICE_OF_FREE_PASS
             ]);
 
             $order->total_price += 0;
