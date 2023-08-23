@@ -14,13 +14,13 @@ class OrderController extends Controller
     public function __invoke(Request $request, OrderService $orderService)
     {
         $activity = Activity::where('slug', 'japanese-festival-7')->first();
-        $order = $request->user()->order()->where([
+        $order = $request->user()->orders()->where([
             ['status', OrderStatusEnum::Pending->value],
             ['expired_at', '>', now()]
         ])->with([
             'tickets' => ['activity:id,name,slug,price,date'],
             'registrations' => ['competition']
-        ])->first();
+        ])->latest()->first();
 
         $orderService->remapTicketOrder($order);
         $orderService->remapRegistrationOrder($order);

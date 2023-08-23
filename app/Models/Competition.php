@@ -2,10 +2,9 @@
 
 namespace App\Models;
 
+use App\Enums\EventTypeEnum;
 use App\Traits\Slug;
-use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Support\Str;
 
 class Competition extends Model
 {
@@ -41,4 +40,11 @@ class Competition extends Model
     ];
 
     protected $guarded = ['id'];
+
+    protected static function booted()
+    {
+        static::retrieved(function (Model $model) {
+            $model->setAttribute('type', EventTypeEnum::Competition->value);
+        });
+    }
 }
