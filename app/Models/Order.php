@@ -49,7 +49,7 @@ class Order extends Model
 
     public function payment(): HasOne
     {
-        return $this->hasOne(Payment::class);
+        return $this->hasOne(Payment::class)->latestOfMany();
     }
 
     public function registrations(): HasMany
