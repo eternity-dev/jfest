@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\User\Payment\PaymentNotificationController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -12,3 +13,7 @@ use Illuminate\Support\Facades\Route;
 | be assigned to the "api" middleware group. Make something great!
 |
 */
+
+Route::name('payment')->prefix('payment')->group(function () {
+    Route::post('/callback', PaymentNotificationController::class)->name('callback');
+});

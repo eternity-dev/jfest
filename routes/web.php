@@ -6,14 +6,12 @@ use App\Http\Controllers\HomeController;
 use App\Http\Controllers\ShowActivityDetailsController;
 use App\Http\Controllers\ShowCompetitionDetailsController;
 use App\Http\Controllers\User\Checkout\CheckoutInfoController;
-use App\Http\Controllers\User\Checkout\CheckoutPaymentInfoController;
 use App\Http\Controllers\User\Checkout\CheckoutSummaryController;
 use App\Http\Controllers\User\Order\AddNewRegistrationOrderController;
 use App\Http\Controllers\User\Order\AddNewTicketOrderController;
 use App\Http\Controllers\User\Order\OrderController;
-use App\Http\Controllers\User\Payment\PaymentNotificationController;
-use App\Http\Controllers\User\Payment\RedirectToPaymentController;
-use Illuminate\Http\Request;
+use App\Http\Controllers\User\Payment\PaymentFallbackController;
+use App\Http\Controllers\User\Payment\PaymentRedirectController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -38,8 +36,8 @@ Route::name('auth.')->prefix('auth')->group(function () {
 
 Route::name('user.')->middleware('auth')->group(function () {
     Route::name('payment.')->prefix('payment')->group(function () {
-        Route::get('/redirect', RedirectToPaymentController::class)->name('redirect');
-        Route::post('/callback', PaymentNotificationController::class)->name('callback');
+        Route::get('/redirect', PaymentRedirectController::class)->name('redirect');
+        Route::get('/fallback', PaymentFallbackController::class)->name('fallback');
     });
 
     Route::name('checkout.')->prefix('checkout')->group(function () {
@@ -48,11 +46,11 @@ Route::name('user.')->middleware('auth')->group(function () {
     });
 
     Route::name('order.')->prefix('orders')->group(function () {
-        Route::get('/a/{activity:slug}/create', [AddNewTicketOrderController::class, 'create'])->name('activity.create');
-        Route::post('/a/{activity:slug}', [AddNewTicketOrderController::class, 'store'])->name('activity.store');
-        Route::get('/c/{competition:slug}/create', [AddNewRegistrationOrderController::class, 'create'])->name('competition.create');
-        Route::post('/c/{competition:slug}', [AddNewRegistrationOrderController::class, 'store'])->name('competition.store');
         Route::get('/', OrderController::class)->name('index');
+        Route::get('/a/{activity:slug}/create', [AddNewTicketOrderController::class, 'create'])->name('activity.create');
+        Route::get('/c/{competition:slug}/create', [AddNewRegistrationOrderController::class, 'create'])->name('competition.create');
+        Route::post('/a/{activity:slug}', [AddNewTicketOrderController::class, 'store'])->name('activity.store');
+        Route::post('/c/{competition:slug}', [AddNewRegistrationOrderController::class, 'store'])->name('competition.store');
     });
 });
 
