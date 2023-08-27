@@ -60,7 +60,8 @@ class MidtransPaymentService
                 'unit' => 'days'
             ],
             'callbacks' => [
-                'finish' => route('user.payment.fallback')
+                'finish' => route('user.payment.fallback'),
+                'unfinish' => route('user.order.index')
             ]
         ];
 
