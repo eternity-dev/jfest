@@ -4,7 +4,7 @@ import axios from "axios";
 import { css, styled } from "@/root/stitches.config";
 
 import useAuth from "@/hooks/useAuth";
-import useNavbarLinks from "@/hooks/useNavbarLinks";
+import useNavbar from "@/hooks/useNavbar";
 
 import { Button } from "@/components/button";
 import { Grid } from "@/components/grid";
@@ -78,7 +78,9 @@ export default function Activities({ activities, competitions }) {
     const joinedActivities = [...activities, ...competitions];
 
     const { isAuthenticated } = useAuth();
-    const { authUrl } = useNavbarLinks();
+    const {
+        links: { authUrl },
+    } = useNavbar();
 
     async function handleRedirectToOrderPage(orderUrl) {
         if (isAuthenticated) {
