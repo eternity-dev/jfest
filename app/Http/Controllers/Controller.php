@@ -48,7 +48,7 @@ class Controller extends BaseController
                     ],
                     [
                         'label' => 'History',
-                        'href' => route('global.home'),
+                        'href' => route('user.history.index'),
                         'requireAuthenticated' => true
                     ]
                 ]
