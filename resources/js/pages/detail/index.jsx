@@ -47,7 +47,7 @@ function DetailPage({ data, links: { orderUrl }, meta }) {
                         },
                     }).toString()}
                 >
-                    <Image type={data.type} />
+                    <Image type={data.type} src={data.image_url} />
                     <div
                         style={{
                             display: "flex",
