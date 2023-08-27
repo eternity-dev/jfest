@@ -149,12 +149,12 @@ export default function Activities({ activities, competitions }) {
                                     {activity.image_url ? (
                                         <img
                                             className={css({
-                                                height: "55%",
-                                                width: "55%",
+                                                height: "80%",
+                                                width: "80%",
                                                 objectFit: "contain",
                                                 objectPosition: "center",
                                             }).toString()}
-                                            src={ComingSoon}
+                                            src={activity.image_url}
                                             alt="Coming soon"
                                         />
                                     ) : (

@@ -6,8 +6,8 @@ import FrameOrange from "@/assets/activities/frame-orange.svg";
 
 const BaseImageInner = styled("img", {
     display: "block",
-    height: "100%",
-    width: "100%",
+    height: "80%",
+    width: "80%",
     objectFit: "cover",
     objectPosition: "center",
     outline: "none",
