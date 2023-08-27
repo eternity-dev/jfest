@@ -151,19 +151,19 @@ class MidtransPaymentService
                 'message' => 'Notification received',
                 'status' => Response::HTTP_OK
             ];
-        } catch (\Throwable $exception) {
-            Log::debug($exception->getMessage());
-
-            return [
-                'message' => $exception->getMessage(),
-                'status' => Response::HTTP_SERVICE_UNAVAILABLE
-            ];
         } catch (ModelNotFoundException) {
             Log::debug('Invalid order id provided', ['order_id' => $orderId]);
 
             return [
                 'message' => 'Invalid order id',
                 'status' => Response::HTTP_BAD_REQUEST
+            ];
+        } catch (\Throwable $exception) {
+            Log::debug($exception->getMessage());
+
+            return [
+                'message' => $exception->getMessage(),
+                'status' => Response::HTTP_SERVICE_UNAVAILABLE
             ];
         }
     }
