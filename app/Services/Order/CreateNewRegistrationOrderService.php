@@ -59,6 +59,8 @@ class CreateNewRegistrationOrderService
         Competition $competition,
         array $data
     ) {
+        $hasTeam = false;
+
         $registration = new Registration([
             'competition_id' => $competition->id,
             'user_id' => $user->uuid,
