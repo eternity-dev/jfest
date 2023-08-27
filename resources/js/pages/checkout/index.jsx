@@ -65,6 +65,7 @@ function CheckoutPage({ data, links: { redirectToPaymentUrl }, meta }) {
                         rowGap: "2rem",
                         width: "100%",
                         height: "max-content",
+                        "@mobile": { gridTemplateColumns: "1fr" },
                     }).toString()}
                 >
                     <section
