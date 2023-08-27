@@ -62,17 +62,18 @@ export default function Item({ data, type }) {
                             gap: "0.5rem",
                         }}
                     >
-                        {data.team.members.map((member) => (
-                            <Text
-                                key={member.id}
-                                css={{
-                                    color: "rgba(255, 255, 255, 0.5)",
-                                    fontSize: "1.25rem",
-                                }}
-                            >
-                                - {member.name}
-                            </Text>
-                        ))}
+                        {data.team &&
+                            data.team.members.map((member) => (
+                                <Text
+                                    key={member.id}
+                                    css={{
+                                        color: "rgba(255, 255, 255, 0.5)",
+                                        fontSize: "1.25rem",
+                                    }}
+                                >
+                                    - {member.name}
+                                </Text>
+                            ))}
                     </div>
                 )}
                 {isActivity && (
@@ -125,9 +126,29 @@ export default function Item({ data, type }) {
                     Print Ticket
                 </Button>
             ) : (
-                <Button color="light" as="a" href={data.competition.group_url}>
-                    Join Group
-                </Button>
+                <div
+                    className={css({
+                        display: "flex",
+                        gap: "0.75rem",
+                        "@mobile": { flexDirection: "column" },
+                    }).toString()}
+                >
+                    <Button
+                        color="light"
+                        as="a"
+                        href={data.competition.guide_book_url}
+                        target="_blank"
+                    >
+                        Download Guide Book
+                    </Button>
+                    <Button
+                        color="light"
+                        as="a"
+                        href={data.competition.group_url}
+                    >
+                        Join Group
+                    </Button>
+                </div>
             )}
             <Modal
                 contentLabel={`Ticket QR`}
