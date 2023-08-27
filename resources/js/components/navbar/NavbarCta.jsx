@@ -8,6 +8,7 @@ import { UserCard, UserCardAvatar, UserCardName } from "./UserCard";
 
 import { ReactComponent as LogoutIcon } from "@/assets/icons/logout.svg";
 import { ReactComponent as MenuIcon } from "@/assets/icons/menu.svg";
+import { useWindowSize } from "@uidotdev/usehooks";
 
 const LogoutButton = styled("button", {
     display: "flex",
@@ -34,6 +35,7 @@ const LogoutButton = styled("button", {
 const MenuButton = styled(LogoutButton, {});
 
 export default function NavbarCta({ theme }) {
+    const { width } = useWindowSize();
     const { auth, isAuthenticated, revokeAuth } = useAuth();
     const {
         links: { authUrl },
@@ -56,9 +58,11 @@ export default function NavbarCta({ theme }) {
                     <LogoutButton onClick={handleRevokeAuth}>
                         <LogoutIcon />
                     </LogoutButton>
-                    <MenuButton onClick={toggleIsMobileNavbarOpened}>
-                        <MenuIcon />
-                    </MenuButton>
+                    {width < 500 && (
+                        <MenuButton onClick={toggleIsMobileNavbarOpened}>
+                            <MenuIcon />
+                        </MenuButton>
+                    )}
                 </UserCard>
             ) : (
                 <Button color={theme} as="a" href={authUrl.attempt}>
