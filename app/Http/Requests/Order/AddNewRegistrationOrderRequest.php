@@ -68,8 +68,8 @@ class AddNewRegistrationOrderRequest extends FormRequest
             'instagram' => 'nullable|string|min:3',
             'nickname' => 'nullable|string|min:3',
             'teamName' => 'nullable|string|min:3',
-            'teamMembers' => 'nullable|array',
-            'teamMembers.*.name' => 'required|string',
+            'teamMembers' => 'required_unless:teamName,null|array',
+            'teamMembers.*.name' => 'required_unless:teamName,null|string',
             'teamMembers.*.instagram' => 'nullable|string|min:3',
             'teamMembers.*.nickname' => 'nullable|string|min:3',
         ];

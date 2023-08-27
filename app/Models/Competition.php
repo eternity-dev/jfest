@@ -28,6 +28,7 @@ class Competition extends Model
         'price',
         'price_tag',
         'group_url',
+        'guide_book_url',
         'image_url',
         'with_ticket',
         'use_instagram_field',

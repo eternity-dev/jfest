@@ -15,12 +15,12 @@ class HistoryController extends Controller
         $orders = $user->orders()
             ->with([
                 'tickets' => [
-                    'activity:id,slug,name'
+                    'activity'
                 ]
             ])
             ->with([
                 'registrations' => [
-                    'competition:id,slug,name',
+                    'competition',
                     'team' => ['members']
                 ]
             ])
