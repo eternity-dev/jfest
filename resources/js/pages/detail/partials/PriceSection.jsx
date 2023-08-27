@@ -1,5 +1,3 @@
-import { Link } from "@inertiajs/react";
-
 import { Button } from "@/components/button";
 import { Text } from "@/components/text";
 
@@ -22,11 +20,14 @@ export default function PriceSection({
             <Text css={{ color: "rgba(255, 255, 255, 0.45)" }}>
                 Rp {price.toLocaleString("id-ID")} {priceTag && `(${priceTag})`}
             </Text>
-            <Link href={orderUrl} style={{ textDecoration: "none" }}>
-                <Button color="light" css={{ "@mobile": { width: "100%" } }}>
-                    {isActivity ? "Order Now" : "Register Now"}
-                </Button>
-            </Link>
+            <Button
+                color="light"
+                css={{ "@mobile": { width: "100%" } }}
+                as="a"
+                href={orderUrl}
+            >
+                {isActivity ? "Order Now" : "Register Now"}
+            </Button>
         </section>
     );
 }
