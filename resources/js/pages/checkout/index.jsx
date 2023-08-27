@@ -7,6 +7,7 @@ import StepContainer from "./shared/StepContainer";
 
 import { css, styled } from "@/root/stitches.config";
 import { generateMetadata } from "@/utils/helper";
+import withNavbarMobile from "@/hooks/hoc/withNavbarMobile";
 
 import { Text } from "@/components/text";
 import Item from "./shared/Item";
@@ -43,11 +44,7 @@ function flatAndGroupObjectsBy(array, identifier) {
     }, {});
 }
 
-export default function CheckoutPage({
-    data,
-    links: { redirectToPaymentUrl },
-    meta,
-}) {
+function CheckoutPage({ data, links: { redirectToPaymentUrl }, meta }) {
     const tickets = Object.entries(
         flatAndGroupObjectsBy(data.tickets, "price")
     );
@@ -119,3 +116,5 @@ export default function CheckoutPage({
         </>
     );
 }
+
+export default withNavbarMobile(CheckoutPage);

@@ -1,12 +1,13 @@
 import { styled } from "@/root/stitches.config";
 
 import useAuth from "@/hooks/useAuth";
-import useNavbarLinks from "@/hooks/useNavbarLinks";
+import useNavbar from "@/hooks/useNavbar";
 
 import { Button } from "@/components/button";
 import { UserCard, UserCardAvatar, UserCardName } from "./UserCard";
 
 import { ReactComponent as LogoutIcon } from "@/assets/icons/logout.svg";
+import { ReactComponent as MenuIcon } from "@/assets/icons/menu.svg";
 
 const LogoutButton = styled("button", {
     display: "flex",
@@ -15,7 +16,7 @@ const LogoutButton = styled("button", {
     height: "1.75rem",
     width: "1.75rem",
     border: "none",
-    borderRadius: "50%",
+    borderRadius: "0.5rem",
     backgroundColor: "transparent",
     outline: "none",
     transition: "all 0.3s ease-in-out",
@@ -30,9 +31,14 @@ const LogoutButton = styled("button", {
     },
 });
 
+const MenuButton = styled(LogoutButton, {});
+
 export default function NavbarCta({ theme }) {
     const { auth, isAuthenticated, revokeAuth } = useAuth();
-    const { authUrl } = useNavbarLinks();
+    const {
+        links: { authUrl },
+        toggleIsMobileNavbarOpened,
+    } = useNavbar();
 
     function handleRevokeAuth(evt) {
         evt.preventDefault();
@@ -48,8 +54,11 @@ export default function NavbarCta({ theme }) {
                         <img src={auth.avatar} alt={`${auth.email} avatar`} />
                     </UserCardAvatar>
                     <LogoutButton onClick={handleRevokeAuth}>
-                        <LogoutIcon className />
+                        <LogoutIcon />
                     </LogoutButton>
+                    <MenuButton onClick={toggleIsMobileNavbarOpened}>
+                        <MenuIcon />
+                    </MenuButton>
                 </UserCard>
             ) : (
                 <Button color={theme} as="a" href={authUrl.attempt}>

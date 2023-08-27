@@ -1,6 +1,6 @@
 import { useContext } from "react";
 import NavbarContext from "@/providers/NavbarProvider";
 
-export default function useNavbarLinks() {
+export default function useNavbar() {
     return useContext(NavbarContext);
 }

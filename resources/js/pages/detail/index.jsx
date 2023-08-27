@@ -3,6 +3,7 @@ import { css, styled } from "@/root/stitches.config";
 import { Text } from "@/components/text";
 
 import { generateMetadata } from "@/utils/helper";
+import withNavbarMobile from "@/hooks/hoc/withNavbarMobile";
 
 import Image from "./partials/Image";
 import HeaderSection from "./partials/HeaderSection";
@@ -28,7 +29,7 @@ const Divider = styled("span", {
     backgroundColor: "rgba(255, 255, 255, .1)",
 });
 
-export default function DetailPage({ data, links: { orderUrl }, meta }) {
+function DetailPage({ data, links: { orderUrl }, meta }) {
     const isActivity = data.type.toLowerCase() === "activity";
 
     return (
@@ -74,3 +75,5 @@ export default function DetailPage({ data, links: { orderUrl }, meta }) {
         </>
     );
 }
+
+export default withNavbarMobile(DetailPage);
