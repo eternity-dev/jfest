@@ -19,6 +19,7 @@ return new class extends Migration
             $table->integer('price');
             $table->string('price_tag', 20)->nullable();
             $table->string('group_url')->nullable();
+            $table->string('guide_book_url')->nullable();
             $table->string('image_url')->nullable();
             $table->date('registration_opened_at')->useCurrent();
             $table->date('registration_closed_at')->nullable();
