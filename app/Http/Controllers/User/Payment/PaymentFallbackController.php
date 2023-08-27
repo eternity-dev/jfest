@@ -17,7 +17,7 @@ class PaymentFallbackController extends Controller
                 'transactionStatus' => $request->query('transaction_status'),
             ],
             ...$this->withLinkProps($request, [
-                'historyPageUrl' => route('global.home')
+                'historyPageUrl' => route('user.history.index')
             ]),
             ...$this->withAuthProps($request),
             ...$this->withMetaProps([

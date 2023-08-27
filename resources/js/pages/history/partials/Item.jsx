@@ -54,6 +54,27 @@ export default function Item({ data, type }) {
                         {data[isActivity ? "activity" : "competition"].name}
                     </span>
                 </Text>
+                {!isActivity && (
+                    <div
+                        style={{
+                            display: "flex",
+                            flexDirection: "column",
+                            gap: "0.5rem",
+                        }}
+                    >
+                        {data.team.members.map((member) => (
+                            <Text
+                                key={member.id}
+                                css={{
+                                    color: "rgba(255, 255, 255, 0.5)",
+                                    fontSize: "1.25rem",
+                                }}
+                            >
+                                - {member.name}
+                            </Text>
+                        ))}
+                    </div>
+                )}
                 {isActivity && (
                     <div
                         className={css({
@@ -99,9 +120,15 @@ export default function Item({ data, type }) {
                     </div>
                 )}
             </div>
-            <Button color="light" onClick={toggleShowQR}>
-                Print Ticket
-            </Button>
+            {isActivity ? (
+                <Button color="light" onClick={toggleShowQR}>
+                    Print Ticket
+                </Button>
+            ) : (
+                <Button color="light" as="a" href={data.competition.group_url}>
+                    Join Group
+                </Button>
+            )}
             <Modal
                 contentLabel={`Ticket QR`}
                 isOpen={showQR}
@@ -110,8 +137,6 @@ export default function Item({ data, type }) {
                 shouldCloseOnOverlayClick={true}
                 style={{
                     overlay: {
-                        display: "flex",
-                        alignItems: "center",
                         backgroundColor: "rgba(13, 59, 68, 0.25)",
                         backdropFilter: "blur(6.6px)",
                         height: "100vh",
@@ -119,7 +144,10 @@ export default function Item({ data, type }) {
                         zIndex: 98,
                     },
                     content: {
-                        position: "relative",
+                        position: "absolute",
+                        top: "50%",
+                        left: "50%",
+                        transform: "translate(-50%, -50%)",
                         display: "flex",
                         flexDirection: "column",
                         gap: "1rem",

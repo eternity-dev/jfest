@@ -77,6 +77,13 @@ function HistoryPage({ data, meta }) {
                                         type={ticket.activity.type}
                                     />
                                 ))}
+                                {order.registrations.map((registration) => (
+                                    <Item
+                                        key={registration.id}
+                                        data={registration}
+                                        type={registration.competition.type}
+                                    />
+                                ))}
                             </ItemContainer>
                         </div>
                     ))}

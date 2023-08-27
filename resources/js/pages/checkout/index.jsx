@@ -25,10 +25,7 @@ const Container = styled("section", {
     "@mobile": { paddingTop: "8rem" },
 });
 
-const steps = [
-    { id: 1, label: "Information" },
-    { id: 2, label: "Summary" },
-];
+const steps = [{ id: 1, label: "Information" }];
 
 function flatAndGroupObjectsBy(array, identifier) {
     return array.reduce((result, obj) => {
