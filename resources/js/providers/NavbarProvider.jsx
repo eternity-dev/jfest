@@ -1,10 +1,26 @@
+import { useToggle, useWindowSize } from "@uidotdev/usehooks";
 import { createContext } from "react";
 
-const NavbarContext = createContext([]);
+const NavbarContext = createContext({
+    links: {},
+    isMobileNavbarDisplayed: false,
+    isMobileNavbarOpened: false,
+    toggleIsMobileNavbarOpened: null,
+});
 
 export function NavbarProvider({ links, children }) {
+    const [isMobileNavbarOpened, toggleIsMobileNavbarOpened] = useToggle(false);
+    const { width } = useWindowSize();
+
     return (
-        <NavbarContext.Provider value={links}>
+        <NavbarContext.Provider
+            value={{
+                links,
+                isMobileNavbarDisplayed: width < 500,
+                isMobileNavbarOpened,
+                toggleIsMobileNavbarOpened,
+            }}
+        >
             {children}
         </NavbarContext.Provider>
     );

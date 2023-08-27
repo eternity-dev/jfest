@@ -3,6 +3,7 @@ import { css, styled } from "@/root/stitches.config";
 import { generateMetadata } from "@/utils/helper";
 
 import useForm from "@/hooks/useForm";
+import withNavbarMobile from "@/hooks/hoc/withNavbarMobile";
 
 import HeaderSection from "./partials/HeaderSection";
 
@@ -28,7 +29,7 @@ const InputWrapper = styled("div", {
     gap: "0.75rem",
 });
 
-export default function OrderTicketPage({ data, links: { submitUrl }, meta }) {
+function OrderTicketPage({ data, links: { submitUrl }, meta }) {
     const isActivity = data.type.toLowerCase() === "activity";
 
     const { inputs, handleChange } = useForm({ amount: 1 });
@@ -101,3 +102,5 @@ export default function OrderTicketPage({ data, links: { submitUrl }, meta }) {
         </>
     );
 }
+
+export default withNavbarMobile(OrderTicketPage);

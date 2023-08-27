@@ -11,6 +11,8 @@ import ErrorMessage from "./shared/ErrorMessage";
 import HeaderSection from "./partials/HeaderSection";
 import TeamSection from "./partials/TeamSection";
 
+import withNavbarMobile from "@/hooks/hoc/withNavbarMobile";
+
 import { Button } from "@/components/button";
 import { TextInput } from "@/components/input";
 import { Text } from "@/components/text";
@@ -52,11 +54,7 @@ function toObject(data) {
     return result;
 }
 
-export default function OrderRegistrationPage({
-    data,
-    links: { submitUrl },
-    meta,
-}) {
+function OrderRegistrationPage({ data, links: { submitUrl }, meta }) {
     const isActivity = data.type.toLowerCase() === "activity";
 
     const { errors: baseErrors } = usePage().props;
@@ -243,3 +241,5 @@ export default function OrderRegistrationPage({
         </>
     );
 }
+
+export default withNavbarMobile(OrderRegistrationPage);

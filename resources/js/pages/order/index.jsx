@@ -5,6 +5,8 @@ import { generateMetadata } from "@/utils/helper";
 import RegistrationCard from "./partials/RegistrationCard";
 import TicketCard from "./partials/TicketCard";
 
+import withNavbarMobile from "@/hooks/hoc/withNavbarMobile";
+
 import { Button } from "@/components/button";
 import { Text } from "@/components/text";
 import { Title } from "@/components/title";
@@ -21,11 +23,7 @@ const Container = styled("section", {
     "@mobile": { paddingTop: "8rem" },
 });
 
-export default function OrderPage({
-    data,
-    links: { checkoutUrl, orderTicketUrl },
-    meta,
-}) {
+function OrderPage({ data, links: { checkoutUrl, orderTicketUrl }, meta }) {
     if (
         !data ||
         (data.tickets.length === 0 && data.registrations.length === 0)
@@ -122,3 +120,5 @@ export default function OrderPage({
         </>
     );
 }
+
+export default withNavbarMobile(OrderPage);
