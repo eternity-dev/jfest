@@ -1,14 +1,17 @@
 import { css, styled } from "@/root/stitches.config";
 import { Title } from "../title";
 
-import { ReactComponent as FacebookIcon } from "@/assets/icons/facebook.svg";
+// import { ReactComponent as FacebookIcon } from "@/assets/icons/facebook.svg";
 import { ReactComponent as InstagramIcon } from "@/assets/icons/instagram.svg";
-import { ReactComponent as TiktokIcon } from "@/assets/icons/tiktok.svg";
+// import { ReactComponent as TiktokIcon } from "@/assets/icons/tiktok.svg";
 
 const socials = [
-    { id: 1, label: "@jfest", href: "", Icon: InstagramIcon },
-    { id: 2, label: "@jfest.id", href: "", Icon: FacebookIcon },
-    { id: 3, label: "@jfest-by-stikom", href: "", Icon: TiktokIcon },
+    {
+        id: 1,
+        label: "@jfestbali",
+        href: "https://instagram.com/jfestbali",
+        Icon: InstagramIcon,
+    },
 ];
 
 const SocialLink = styled("a", {

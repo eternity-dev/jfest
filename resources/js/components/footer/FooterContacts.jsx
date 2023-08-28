@@ -1,14 +1,22 @@
 import { css, styled } from "@/root/stitches.config";
 import { Title } from "@/components/title";
 
-import { ReactComponent as TelegramIcon } from "@/assets/icons/telegram.svg";
+// import { ReactComponent as TelegramIcon } from "@/assets/icons/telegram.svg";
 import { ReactComponent as WhatsappIcon } from "@/assets/icons/whatsapp.svg";
 
 const contacts = [
-    { id: 1, label: "User (08177289910)", href: "", Icon: WhatsappIcon },
-    { id: 2, label: "UserTwo (08177289910)", href: "", Icon: WhatsappIcon },
-    { id: 3, label: "@User", href: "", Icon: TelegramIcon },
-    { id: 4, label: "@UserTwo", href: "", Icon: TelegramIcon },
+    {
+        id: 1,
+        label: "Ananta (0895380006644)",
+        href: "https://wa.me/895380006644?text=Hai%20kak%20Ananta%2C%20saya%20ingin%20bertanya.",
+        Icon: WhatsappIcon,
+    },
+    {
+        id: 2,
+        label: "Gung Nickto (087761333399)",
+        href: "https://wa.me/87761333399?text=Hai%20kak%20Nickto%2C%20saya%20ingin%20bertanya.",
+        Icon: WhatsappIcon,
+    },
 ];
 
 const SocialLink = styled("a", {
@@ -57,7 +65,11 @@ export default function FooterContacts() {
                 }).toString()}
             >
                 {contacts.map((contact) => (
-                    <SocialLink key={contact.id} href={contact.href}>
+                    <SocialLink
+                        key={contact.id}
+                        href={contact.href}
+                        target="_blank"
+                    >
                         <contact.Icon />
                         <span>{contact.label}</span>
                     </SocialLink>
