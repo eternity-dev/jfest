@@ -74,9 +74,9 @@ export default function Hero() {
                     <span>YAGYO</span>
                 </Title>
                 <Divider />
-                <Link href={orderTicketUrl} style={{ textDecoration: "none" }}>
-                    <Button>Buy Ticket Now</Button>
-                </Link>
+                <Button as="a" href={orderTicketUrl}>
+                    Buy Ticket Now
+                </Button>
             </div>
             <div
                 className={css({
