@@ -11,6 +11,7 @@ use App\Http\Controllers\User\History\HistoryController;
 use App\Http\Controllers\User\Order\AddNewRegistrationOrderController;
 use App\Http\Controllers\User\Order\AddNewTicketOrderController;
 use App\Http\Controllers\User\Order\OrderController;
+use App\Http\Controllers\User\Order\RemoveOrderController;
 use App\Http\Controllers\User\Payment\PaymentFallbackController;
 use App\Http\Controllers\User\Payment\PaymentRedirectController;
 use Illuminate\Support\Facades\Route;
@@ -56,6 +57,8 @@ Route::name('user.')->middleware('auth')->group(function () {
         Route::get('/c/{competition:slug}/create', [AddNewRegistrationOrderController::class, 'create'])->name('competition.create');
         Route::post('/a/{activity:slug}', [AddNewTicketOrderController::class, 'store'])->name('activity.store');
         Route::post('/c/{competition:slug}', [AddNewRegistrationOrderController::class, 'store'])->name('competition.store');
+        Route::delete('/a/{ticket}/remove', [RemoveOrderController::class, 'removeTicket'])->name('activity.remove');
+        Route::delete('/c/{registration}/remove', [RemoveOrderController::class, 'removeRegistration'])->name('competition.remove');
     });
 });
 

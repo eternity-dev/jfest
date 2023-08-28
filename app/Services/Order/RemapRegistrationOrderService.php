@@ -15,6 +15,9 @@ class RemapRegistrationOrderService
         $order->registrations->map(function ($registration) {
             $date = $registration->competition->registration_closed_at;
             $registration->competition->registrationCloseAtStr = $date->diffForHumans();
+            $registration->remove_url = route('user.order.competition.remove', [
+                'registration' => $registration
+            ]);
 
             return $registration;
         });

@@ -1,4 +1,7 @@
-import { Link } from "@inertiajs/react";
+import { Link, usePage } from "@inertiajs/react";
+import { useEffect } from "react";
+import { toast } from "react-toastify";
+
 import { css, styled } from "@/root/stitches.config";
 import { generateMetadata } from "@/utils/helper";
 
@@ -24,6 +27,12 @@ const Container = styled("section", {
 });
 
 function OrderPage({ data, links: { checkoutUrl, orderTicketUrl }, meta }) {
+    const { flash } = usePage().props;
+
+    useEffect(() => {
+        if (flash.message) return toast(flash.message);
+    }, [flash]);
+
     if (
         !data ||
         (data.tickets.length === 0 && data.registrations.length === 0)

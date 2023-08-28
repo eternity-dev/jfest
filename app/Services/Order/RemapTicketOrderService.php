@@ -15,6 +15,9 @@ class RemapTicketOrderService
         $order->tickets->map(function ($ticket) {
             $date = $ticket->activity->date;
             $ticket->activity->dateStr = $date->diffForHumans();
+            $ticket->remove_url = route('user.order.activity.remove', [
+                'ticket' => $ticket
+            ]);
 
             return $ticket;
         });

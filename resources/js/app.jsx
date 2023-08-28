@@ -1,6 +1,7 @@
 import { createInertiaApp } from "@inertiajs/react";
 import { StrictMode } from "react";
 import { createRoot } from "react-dom/client";
+import { ToastContainer } from "react-toastify";
 
 import { globalCss } from "@/root/stitches.config";
 
@@ -12,6 +13,8 @@ import { Navbar } from "@/components/navbar";
 
 import dreadful from "@/assets/fonts/dreadful.otf";
 import jack from "@/assets/fonts/jack-reacher.ttf";
+
+import "react-toastify/dist/ReactToastify.css";
 
 const globalStyles = globalCss({
     "@font-face": [
@@ -40,6 +43,12 @@ function Wrapper({ children, links, auth }) {
             <NavbarProvider links={links}>
                 <Navbar />
                 {children}
+                <ToastContainer
+                    position="top-right"
+                    newestOnTop={true}
+                    theme="dark"
+                    pauseOnHover
+                />
                 <Footer />
             </NavbarProvider>
         </AuthProvider>

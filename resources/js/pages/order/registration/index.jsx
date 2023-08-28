@@ -1,12 +1,12 @@
+import { Form, Formik } from "formik";
 import { useEffect, useState } from "react";
-import { Formik, Form } from "formik";
 
 import { css, styled } from "@/root/stitches.config";
 import { generateMetadata } from "@/utils/helper";
 import { router, usePage } from "@inertiajs/react";
 
-import { InputOuterWrapper, InputWrapper } from "./shared/InputWrapper";
 import ErrorMessage from "./shared/ErrorMessage";
+import { InputOuterWrapper, InputWrapper } from "./shared/InputWrapper";
 
 import HeaderSection from "./partials/HeaderSection";
 import TeamSection from "./partials/TeamSection";
