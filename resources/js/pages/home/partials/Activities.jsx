@@ -17,6 +17,7 @@ import FrameBlue from "@/assets/activities/frame-blue.svg";
 import FrameOrange from "@/assets/activities/frame-orange.svg";
 import { ReactComponent as TagBlue } from "@/assets/activities/tag-blue.svg";
 import { ReactComponent as TagOrange } from "@/assets/activities/tag-orange.svg";
+import { useCallback, useState } from "react";
 
 const Container = styled("section", {
     position: "relative",
@@ -75,12 +76,22 @@ const ActivityTag = styled("div", {
 });
 
 export default function Activities({ activities, competitions }) {
-    const joinedActivities = [...activities, ...competitions];
+    const [acts, setActs] = useState([...activities, ...competitions]);
+    const [filteredActs, setFilteredActs] = useState(acts);
 
     const { isAuthenticated } = useAuth();
     const {
         links: { authUrl },
     } = useNavbar();
+
+    const handleFilterActs = useCallback((filterBy) => {
+        setFilteredActs(
+            filteredActs.filter(function (act) {
+                if (filterBy === "all") return true;
+                return act.type.toLowerCase() === filterBy;
+            })
+        );
+    }, []);
 
     async function handleRedirectToOrderPage(orderUrl) {
         if (isAuthenticated) {
@@ -115,13 +126,25 @@ export default function Activities({ activities, competitions }) {
                         "@mobile": { flexDirection: "column" },
                     }).toString()}
                 >
-                    <Button color="light" fullWidth>
+                    <Button
+                        color="light"
+                        onClick={() => handleFilterActs("all")}
+                        fullWidth
+                    >
                         Alls
                     </Button>
-                    <Button color="light" fullWidth>
+                    <Button
+                        color="light"
+                        onClick={() => handleFilterActs("activity")}
+                        fullWidth
+                    >
                         Activities
                     </Button>
-                    <Button color="light" fullWidth>
+                    <Button
+                        color="light"
+                        onClick={() => handleFilterActs("competition")}
+                        fullWidth
+                    >
                         Competitions
                     </Button>
                 </div>
@@ -134,7 +157,7 @@ export default function Activities({ activities, competitions }) {
                     padding: "2rem 0",
                 }}
             >
-                {joinedActivities.map((activity) => {
+                {filteredActs.map((activity) => {
                     const isActivity =
                         activity.type.toLowerCase() === "activity";
 
