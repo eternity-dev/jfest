@@ -1,5 +1,8 @@
 import { styled } from "@/root/stitches.config";
 import { ReactComponent as JFestLogo } from "@/assets/logo.svg";
+import { Link } from "@inertiajs/react";
+
+import useNavbar from "@/hooks/useNavbar";
 
 const Logo = styled(JFestLogo, {
     display: "block",
@@ -10,5 +13,13 @@ const Logo = styled(JFestLogo, {
 });
 
 export default function NavbarLogo() {
-    return <Logo />;
+    const {
+        links: { homeUrl },
+    } = useNavbar();
+
+    return (
+        <Link href={homeUrl}>
+            <Logo />
+        </Link>
+    );
 }

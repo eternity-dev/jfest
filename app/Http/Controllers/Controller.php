@@ -35,6 +35,7 @@ class Controller extends BaseController
                     'attempt' => route('auth.attempt'),
                     'revoke' => route('auth.revoke')
                 ],
+                'homeUrl' => route('global.home'),
                 'navbarUrl' => [
                     [
                         'label' => 'Home',
