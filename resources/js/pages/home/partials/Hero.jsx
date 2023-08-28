@@ -1,8 +1,11 @@
 import { css, styled } from "@/root/stitches.config";
+import { Link } from "@inertiajs/react";
 
 import { Button } from "@/components/button";
 import { Divider } from "@/components/divider";
 import { Title } from "@/components/title";
+
+import useNavbar from "@/hooks/useNavbar";
 
 import backdropMobile from "@/assets/misc/hero-backdrop-mobile.png";
 import backdrop from "@/assets/misc/hero-backdrop.png";
@@ -49,6 +52,10 @@ const Backdrop = styled("div", {
 });
 
 export default function Hero() {
+    const {
+        links: { orderTicketUrl },
+    } = useNavbar();
+
     return (
         <Container>
             <Backdrop />
@@ -67,9 +74,9 @@ export default function Hero() {
                     <span>YAGYO</span>
                 </Title>
                 <Divider />
-                <Button as="a" href="/activities">
-                    See Activities
-                </Button>
+                <Link href={orderTicketUrl} style={{ textDecoration: "none" }}>
+                    <Button>Buy Ticket Now</Button>
+                </Link>
             </div>
             <div
                 className={css({

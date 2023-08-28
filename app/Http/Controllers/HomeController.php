@@ -18,7 +18,11 @@ class HomeController extends Controller
 
         return Inertia::render('home/index', [
             ...compact('activities', 'competitions'),
-            ...$this->withLinkProps($request, []),
+            ...$this->withLinkProps($request, [
+                'orderTicketUrl' => route('user.order.activity.create', [
+                    'activity' => $activities->where('slug', 'japanese-festival-7')->first()
+                ])
+            ]),
             ...$this->withAuthProps($request),
             ...$this->withMetaProps([
                 'head' => [
