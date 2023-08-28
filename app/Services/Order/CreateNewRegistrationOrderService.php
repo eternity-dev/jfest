@@ -101,6 +101,7 @@ class CreateNewRegistrationOrderService
         if ($competition->with_ticket) $this->createTickets(
             $user,
             $order,
+            $registration,
             $hasTeam
                 ? $team->number_of_members + self::INDIVIDUAL_COUNT
                 : self::INDIVIDUAL_COUNT
@@ -109,7 +110,7 @@ class CreateNewRegistrationOrderService
         if ($order->isDirty('total_price')) $order->save();
     }
 
-    private function createTickets(User $user, Order $order, int $amount)
+    private function createTickets(User $user, Order $order, Registration $registration, int $amount)
     {
         $activity = Activity::where('slug', self::TICKET_SLUG)->first();
         $tickets = [];
@@ -118,6 +119,7 @@ class CreateNewRegistrationOrderService
             $tickets[] = new Ticket([
                 'activity_id' => $activity->id,
                 'user_id' => $user->uuid,
+                'registration_id' => $registration->id,
                 'price' => self::PRICE_OF_FREE_PASS
             ]);
 

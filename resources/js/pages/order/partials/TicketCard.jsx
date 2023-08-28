@@ -183,7 +183,11 @@ export default function TicketCard({ data }) {
                         Pending
                     </Text>
                 )}
-                <RemoveButton onClick={handleRemoveOrder}>Remove</RemoveButton>
+                {!data.registration_id && (
+                    <RemoveButton onClick={handleRemoveOrder}>
+                        Remove
+                    </RemoveButton>
+                )}
             </div>
         </Wrapper>
     );

@@ -3,6 +3,7 @@
 use App\Enums\AttendStatusEnum;
 use App\Models\Activity;
 use App\Models\Order;
+use App\Models\Registration;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
@@ -24,6 +25,7 @@ return new class extends Migration
             $table->uuid()->nullable();
             $table->foreignIdFor(Activity::class)->constrained()->cascadeOnDelete();
             $table->foreignIdFor(Order::class)->constrained()->cascadeOnDelete();
+            $table->foreignIdFor(Registration::class)->nullable()->constrained()->cascadeOnDelete();
             $table->foreignUuid('user_id')->constrained('users', 'uuid')->cascadeOnDelete();
             $table->enum('attended_status', $statuses)->default(AttendStatusEnum::NotAttended->value);
             $table->timestamp('attended_at')->nullable();

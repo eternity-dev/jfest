@@ -18,6 +18,7 @@ class Ticket extends Model
         'activity_id',
         'order_id',
         'user_id',
+        'registration_id',
         'price',
         'attended_status',
         'attended_at'
@@ -33,6 +34,11 @@ class Ticket extends Model
     public function order(): BelongsTo
     {
         return $this->belongsTo(Order::class);
+    }
+
+    public function registration(): BelongsTo
+    {
+        return $this->belongsTo(Registration::class);
     }
 
     public function user(): BelongsTo
