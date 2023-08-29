@@ -4,6 +4,8 @@ namespace App\Services\Payment;
 
 use App\Enums\OrderStatusEnum;
 use App\Enums\PaymentStatusEnum;
+use App\Mail\Payment\PendingPayment;
+use App\Mail\Payment\SuccessPayment;
 use App\Models\Order;
 use App\Models\Payment;
 use App\Models\Registration;
@@ -13,6 +15,7 @@ use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\Response;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Str;
 use Midtrans\Notification;
 use Midtrans\Snap;
@@ -45,7 +48,7 @@ class MidtransPaymentService
         $params = [
             'transaction_details' => [
                 'order_id' => Str::upper(sprintf('%s#%s', $order->reference, Str::random('4'))),
-                'gross_amount' => $order->total_price
+                'gross_amount' => $order->total_price + $orderFee
             ],
             'item_details' => array_merge(
                 [],
@@ -72,6 +75,11 @@ class MidtransPaymentService
             'link' => $transaction->redirect_url
         ]);
 
+        logger()->channel('stack')->debug('Payment has been created', [
+            'user_id' => $user->uuid,
+            'payment_id' => $payment->id
+        ]);
+
         $order->payment()->save($payment);
         return redirect()->away($payment->link);
     }
@@ -90,6 +98,12 @@ class MidtransPaymentService
             $paymentType = $notification->payment_type;
             $statusCode = $notification->status_code;
             $grossAmount = $notification->gross_amount;
+
+            logger()->channel('stack')->debug('Notification has been received', [
+                'order_id' => $orderId,
+                'trx_id' => $trxId,
+                'trx_status' => $trxStatus
+            ]);
 
             if (!$this->verifySignature(
                 $trxSigKey,
@@ -110,28 +124,80 @@ class MidtransPaymentService
                 case self::STATUS_CAPTURE:
                 case self::STATUS_SETTLEMENT:
                     if ($trxFraudStatus == self::FRAUD_CHALLENGE) {
+                        $order->status = OrderStatusEnum::Paid;
                         $payment->status = PaymentStatusEnum::Challenge;
+
+                        logger()->channel('stack')->info('Payment success', [
+                            'order_id' => $orderId,
+                            'user_id' => $order->user->uuid,
+                            'trx_id' => $trxId,
+                        ]);
                         break;
                     } else {
                         $order->status = OrderStatusEnum::Paid;
                         $payment->status = PaymentStatusEnum::Success;
+
+                        logger()->channel('stack')->info('Payment success', [
+                            'order_id' => $orderId,
+                            'user_id' => $order->user->uuid,
+                            'trx_id' => $trxId,
+                        ]);
                         break;
                     }
                 case self::STATUS_CANCEL:
                     $payment->status = PaymentStatusEnum::Canceled;
+
+                    logger()->channel('stack')->info('Payment status changed',  [
+                        'order_id' => $orderId,
+                        'trx_id' => $trxId,
+                        'status' => $payment->status
+                    ]);
                     break;
                 case self::STATUS_DENY:
                     $payment->status = PaymentStatusEnum::Failed;
+
+                    logger()->channel('stack')->warning('Payment status changed',  [
+                        'order_id' => $orderId,
+                        'trx_id' => $trxId,
+                        'status' => $payment->status
+                    ]);
                     break;
                 case self::STATUS_EXPIRE:
                     $payment->status = PaymentStatusEnum::Expired;
+
+                    logger()->channel('stack')->info('Payment status changed',  [
+                        'order_id' => $orderId,
+                        'trx_id' => $trxId,
+                        'status' => $payment->status
+                    ]);
                     break;
                 case self::STATUS_FAILURE:
                     $payment->status = PaymentStatusEnum::Failed;
+
+                    logger()->channel('stack')->info('Payment status changed',  [
+                        'order_id' => $orderId,
+                        'trx_id' => $trxId,
+                        'status' => $payment->status
+                    ]);
                     break;
                 default:
                     $payment->status = PaymentStatusEnum::Pending;
+
+                    logger()->channel('stack')->info('Payment status changed',  [
+                        'order_id' => $orderId,
+                        'trx_id' => $trxId,
+                        'status' => $payment->status
+                    ]);
                     break;
+            }
+
+            if ($order->status === OrderStatusEnum::Paid) {
+                Mail::to($order->user->email)->send(new SuccessPayment($order));
+
+                logger()->channel('email')->info('Email sent successfully', [
+                    'from' => env('MAIL_FROM_ADDRESS'),
+                    'to' => $order->user->email
+                ]);
             }
 
             $order->save();
@@ -142,25 +208,23 @@ class MidtransPaymentService
                 $payment
             ]);
 
-            Log::debug('Notification received', [
-                'order_id' => $orderId,
-                'trx_id' => $trxId,
-                'trx_status' => $trxStatus
-            ]);
-
             return [
                 'message' => 'Notification received',
                 'status' => Response::HTTP_OK
             ];
         } catch (ModelNotFoundException) {
-            Log::debug('Invalid order id provided', ['order_id' => $orderId]);
+            logger()->channel('error')->error('Invalid order id provided', [
+                'order_id' => $orderId,
+            ]);
 
             return [
                 'message' => 'Invalid order id',
                 'status' => Response::HTTP_BAD_REQUEST
             ];
         } catch (\Throwable $exception) {
-            Log::debug($exception->getMessage());
+            logger()->channel('error')->error($exception->getMessage(), [
+                'order_id' => $orderId,
+            ]);
 
             return [
                 'message' => $exception->getMessage(),
