@@ -13,45 +13,58 @@ class LoginController extends Controller
 {
     public function attempt(Request $request)
     {
-        $driver = Socialite::driver('google');
+        try {
+            $driver = Socialite::driver('google');
 
-        return $request->isXmlHttpRequest() || $request->expectsJson()
-            ? response()->json([
-                'meta' => [
-                    'redirectUrl' => $driver
-                        ->redirect()
-                        ->getTargetUrl()
-                ]
-            ])
-            : Socialite::driver('google')->redirect();
+            return $request->isXmlHttpRequest() || $request->expectsJson()
+                ? response()->json([
+                    'meta' => [
+                        'redirectUrl' => $driver
+                            ->redirect()
+                            ->getTargetUrl()
+                    ]
+                ])
+                : Socialite::driver('google')->redirect();
+        } catch (\Throwable|\Exception $exception) {
+            logger()->channel('error')->error($exception->getMessage());
+        }
     }
 
     public function callback()
     {
-        $capturedUser = Socialite::driver('google')->user();
-        $capturedUserId = $capturedUser->getId();
-        $capturedUserEmail = $capturedUser->getEmail();
+        try {
+            $capturedUser = Socialite::driver('google')->user();
+            $capturedUserId = $capturedUser->getId();
+            $capturedUserEmail = $capturedUser->getEmail();
 
-        $userCredentials = [
-            'email' => $capturedUserEmail,
-            'password' =>  $capturedUserId
-        ];
+            $userCredentials = [
+                'email' => $capturedUserEmail,
+                'password' =>  $capturedUserId
+            ];
 
-        if (Auth::attempt($userCredentials)) {
-            return redirect()
-                ->intended(RouteServiceProvider::HOME);
-        } else {
-            $user = new User();
-            $user->email = $capturedUserEmail;
-            $user->password = $capturedUserId;
-            $user->name = $capturedUser->getName();
-            $user->avatar = $capturedUser->getAvatar();
-            $user->save();
+            if (Auth::attempt($userCredentials)) {
+                return redirect()
+                    ->intended(RouteServiceProvider::HOME);
+            } else {
+                $user = new User();
+                $user->email = $capturedUserEmail;
+                $user->password = $capturedUserId;
+                $user->name = $capturedUser->getName();
+                $user->avatar = $capturedUser->getAvatar();
+                $user->save();
 
-            Auth::login($user);
+                Auth::login($user);
 
-            return redirect()
-                ->intended(RouteServiceProvider::HOME);
+                logger()->channel('stack')->info('New user registered', [
+                    'user_id' => $user->uuid,
+                    'user_email' => $capturedUserEmail
+                ]);
+
+                return redirect()
+                    ->intended(RouteServiceProvider::HOME);
+            }
+        } catch (\Throwable|\Exception $exception) {
+            logger()->channel('error')->error($exception->getMessage());
         }
     }
 }

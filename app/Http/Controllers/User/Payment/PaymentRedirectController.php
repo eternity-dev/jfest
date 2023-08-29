@@ -10,6 +10,10 @@ class PaymentRedirectController extends Controller
 {
     public function __invoke(Request $request, PaymentService $paymentService)
     {
-        return $paymentService->redirect('midtrans', $request->user());
+        try {
+            return $paymentService->redirect('midtrans', $request->user());
+        } catch (\Throwable|\Exception $exception) {
+            logger()->channel('error')->error($exception->getMessage());
+        }
     }
 }

@@ -6,7 +6,6 @@ use App\Http\Controllers\HomeController;
 use App\Http\Controllers\ShowActivityDetailsController;
 use App\Http\Controllers\ShowCompetitionDetailsController;
 use App\Http\Controllers\User\Checkout\CheckoutInfoController;
-use App\Http\Controllers\User\Checkout\CheckoutSummaryController;
 use App\Http\Controllers\User\History\HistoryController;
 use App\Http\Controllers\User\Order\AddNewRegistrationOrderController;
 use App\Http\Controllers\User\Order\AddNewTicketOrderController;
@@ -43,7 +42,6 @@ Route::name('user.')->middleware('auth')->group(function () {
     });
 
     Route::name('checkout.')->prefix('checkout')->group(function () {
-        Route::get('/{order:reference}/summary', CheckoutSummaryController::class)->name('summary');
         Route::get('/{order:reference}', CheckoutInfoController::class)->name('index');
     });
 

@@ -13,24 +13,29 @@ class HomeController extends Controller
 {
     public function __invoke(Request $request)
     {
-        $activities = $this->getActivities();
-        $competitions = $this->getCompetitions();
+        try {
+            $activities = $this->getActivities();
+            $competitions = $this->getCompetitions();
 
-        return Inertia::render('home/index', [
-            ...compact('activities', 'competitions'),
-            ...$this->withLinkProps($request, [
-                'orderTicketUrl' => route('user.order.activity.create', [
-                    'activity' => $activities->where('slug', 'japanese-festival-7')->first()
+            return Inertia::render('home/index', [
+                ...compact('activities', 'competitions'),
+                ...$this->withLinkProps($request, [
+                    'orderTicketUrl' => route('user.order.activity.create', [
+                        'activity' => $activities->where('slug', 'japanese-festival-7')->first()
+                    ])
+                ]),
+                ...$this->withAuthProps($request),
+                ...$this->withMetaProps([
+                    'head' => [
+                        'title' => sprintf('%s - Home', $this->appName),
+                        'description' => sprintf('%s home page', $this->appName)
+                    ],
                 ])
-            ]),
-            ...$this->withAuthProps($request),
-            ...$this->withMetaProps([
-                'head' => [
-                    'title' => sprintf('%s - Home', $this->appName),
-                    'description' => sprintf('%s home page', $this->appName)
-                ],
-            ])
-        ]);
+            ]);
+        } catch (\Throwable $exception) {
+            logger()->channel('error')->error($exception->getMessage());
+        }
+
     }
 
     private function generateActionsUrl(

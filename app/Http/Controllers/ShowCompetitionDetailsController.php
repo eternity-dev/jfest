@@ -11,20 +11,24 @@ class ShowCompetitionDetailsController extends Controller
 {
     public function __invoke(Request $request, Competition $competition)
     {
-        $competition->type = EventTypeEnum::Competition->value;
+        try {
+            $competition->type = EventTypeEnum::Competition->value;
 
-        return Inertia::render('detail/index', [
-            'data' => $competition,
-            ...$this->withLinkProps($request, [
-                'orderUrl' => route('user.order.competition.create', compact('competition'))
-            ]),
-            ...$this->withAuthProps($request),
-            ...$this->withMetaProps([
-                'head' => [
-                    'title' => $this->appName . ' - ' . $competition->name,
-                    'description' => $competition->description
-                ]
-            ])
-        ]);
+            return Inertia::render('detail/index', [
+                'data' => $competition,
+                ...$this->withLinkProps($request, [
+                    'orderUrl' => route('user.order.competition.create', compact('competition'))
+                ]),
+                ...$this->withAuthProps($request),
+                ...$this->withMetaProps([
+                    'head' => [
+                        'title' => $this->appName . ' - ' . $competition->name,
+                        'description' => $competition->description
+                    ]
+                ])
+            ]);
+        } catch (\Throwable $exception) {
+            logger()->channel('error')->error($exception->getMessage());
+        }
     }
 }

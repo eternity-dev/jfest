@@ -48,8 +48,18 @@ class CreateNewTicketsOrderService
                 }
             }
 
+            logger()->channel('stack')->info('New order has been placed', [
+                'user_id' => $user->uuid,
+                'order_id' => $order->reference
+            ]);
+
             return true;
         } catch (\Throwable $exception) {
+            logger()->channel('error')->error($exception->getMessage(), [
+                'user_id' => $user->uuid,
+                'order_id' => $order->reference
+            ]);
+
             return false;
         }
     }
