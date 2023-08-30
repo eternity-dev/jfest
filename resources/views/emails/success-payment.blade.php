@@ -24,6 +24,7 @@
             <div>Order Reference: {{ $order->reference }}</div>
             <div>Order Date: {{ $order->created_at }}</div>
             <div>Payment Amount: {{ $formatter->formatCurrency($order->payment->amount, 'IDR') }}</div>
+            <div>Payment Fee: {{ $formatter->formatCurrency($order->payment->fee, 'IDR') }}</div>
             <div>Payment Method: {{ Illuminate\Support\Str::title($order->payment->method) }}</div>
             <br />
             Items ordered:

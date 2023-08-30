@@ -82,7 +82,7 @@ class MidtransProvider implements PaymentProvider
             $order,
             [
                 'link' => $transaction->redirect_url,
-                'fee' => self::FEE
+                'fee' => $orderFee
             ]
         ]);
 
