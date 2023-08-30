@@ -15,7 +15,7 @@ const Container = styled("div", {
     backgroundColor: "rgba(255, 255, 255, 0.05)",
 });
 
-export default function DetailCard({ totalPrice, redirectToPaymentUrl }) {
+export default function DetailCard({ fee, totalPrice, redirectToPaymentUrl }) {
     return (
         <Container>
             <div
@@ -68,7 +68,29 @@ export default function DetailCard({ totalPrice, redirectToPaymentUrl }) {
                         >
                             Admin Fee
                         </Text>
-                        <Text css={{ fontSize: "1.25rem" }}>Rp 2.000</Text>
+                        <Text css={{ fontSize: "1.25rem" }}>
+                            Rp {fee.toLocaleString("id-ID")}
+                        </Text>
+                    </li>
+                    <li
+                        style={{
+                            display: "flex",
+                            justifyContent: "space-between",
+                            width: "100%",
+                            marginTop: "0.5rem",
+                        }}
+                    >
+                        <Text
+                            css={{
+                                fontSize: "1.25rem",
+                                color: "rgba(255, 255, 255, 0.5)",
+                            }}
+                        >
+                            Grand Total
+                        </Text>
+                        <Text css={{ fontSize: "1.25rem" }}>
+                            Rp {(totalPrice + fee).toLocaleString("id-ID")}
+                        </Text>
                     </li>
                 </ul>
             </div>

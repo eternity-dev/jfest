@@ -105,6 +105,7 @@ function CheckoutPage({ data, links: { redirectToPaymentUrl }, meta }) {
                         }).toString()}
                     >
                         <DetailCard
+                            fee={data.total_price * 0.07}
                             totalPrice={data.total_price}
                             redirectToPaymentUrl={redirectToPaymentUrl}
                         />
