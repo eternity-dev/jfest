@@ -45,7 +45,8 @@ class MidtransProvider implements PaymentProvider
         }
 
         $orderId = Str::upper(sprintf('%s#%s', $order->reference, Str::random(4)));
-        $orderGrossAmount = $order->total_price + self::FEE;
+        $orderFee = (int) ($order->total_price * self::FEE);
+        $orderGrossAmount = $order->total_price + $orderFee;
 
         $params = [
             'transaction_details' => [
@@ -54,7 +55,7 @@ class MidtransProvider implements PaymentProvider
             ],
             'item_details' => array_merge(
                 [[
-                    'price' => self::FEE,
+                    'price' => $orderFee,
                     'quantity' => 1,
                     'name' => 'Transaction Fee',
                     'category' => 'fee'

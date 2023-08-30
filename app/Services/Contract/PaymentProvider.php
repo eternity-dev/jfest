@@ -7,7 +7,7 @@ use Illuminate\Http\RedirectResponse;
 
 interface PaymentProvider
 {
-    final public const FEE = 2000;
+    final public const FEE = 0.07;
 
     public function handleRedirect(User $user, callable $beforeCallback): RedirectResponse;
 
