@@ -11,6 +11,7 @@ use App\Http\Controllers\User\Order\AddNewRegistrationOrderController;
 use App\Http\Controllers\User\Order\AddNewTicketOrderController;
 use App\Http\Controllers\User\Order\OrderController;
 use App\Http\Controllers\User\Order\RemoveOrderController;
+use App\Http\Controllers\User\Payment\Fallbacks\MidtransFallbackController;
 use App\Http\Controllers\User\Payment\PaymentFallbackController;
 use App\Http\Controllers\User\Payment\PaymentRedirectController;
 use Illuminate\Support\Facades\Route;
@@ -37,6 +38,10 @@ Route::name('auth.')->prefix('auth')->group(function () {
 
 Route::name('user.')->middleware('auth')->group(function () {
     Route::name('payment.')->prefix('payment')->group(function () {
+        Route::name('fallback.')->prefix('fallback')->group(function () {
+            Route::get('/midtrans', MidtransFallbackController::class)->name('midtrans');
+        });
+
         Route::get('/redirect', PaymentRedirectController::class)->name('redirect');
         Route::get('/fallback', PaymentFallbackController::class)->name('fallback');
     });

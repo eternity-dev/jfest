@@ -1,26 +1,26 @@
 <?php
 
-namespace App\Services\Payment;
+namespace App\Services\Payment\Providers;
 
 use App\Enums\OrderStatusEnum;
 use App\Enums\PaymentStatusEnum;
-use App\Mail\Payment\PendingPayment;
 use App\Mail\Payment\SuccessPayment;
 use App\Models\Order;
-use App\Models\Payment;
 use App\Models\Registration;
 use App\Models\Ticket;
 use App\Models\User;
+use App\Services\Contract\PaymentProvider;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Response;
 use Illuminate\Support\Collection;
-use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Mail;
+use Illuminate\Support\Facades\Redirect;
 use Illuminate\Support\Str;
 use Midtrans\Notification;
 use Midtrans\Snap;
 
-class MidtransPaymentService
+class MidtransProvider implements PaymentProvider
 {
     public const FRAUD_ACCEPT = 'accept';
     public const FRAUD_CHALLENGE = 'challenge';
@@ -33,58 +33,66 @@ class MidtransPaymentService
     public const STATUS_EXPIRE = 'expire';
     public const STATUS_FAILURE = 'failure';
 
-    public function handleRedirect(User $user)
+    public function handleRedirect(User $user, callable $beforeCallback): RedirectResponse
     {
-        $orderFee = 2000;
         $order = $user->orders()->where([
             ['status', OrderStatusEnum::Pending],
             ['expired_at', '>', now()]
         ])->latest()->first();
 
         if (!is_null($order->payment) && $order->payment->amount === $order->total_price) {
-            return redirect()->away($order->payment->link);
+            return Redirect::away($order->payment->link);
         }
+
+        $orderId = Str::upper(sprintf('%s#%s', $order->reference, Str::random(4)));
+        $orderGrossAmount = $order->total_price + self::FEE;
 
         $params = [
             'transaction_details' => [
-                'order_id' => Str::upper(sprintf('%s#%s', $order->reference, Str::random('4'))),
-                'gross_amount' => $order->total_price + $orderFee
+                'order_id' => $orderId,
+                'gross_amount' => $orderGrossAmount
             ],
             'item_details' => array_merge(
-                [],
-                $this->transformTicketsToItemsList($order->tickets),
-                $this->transformRegistrationsToItemsList($order->registrations)
+                [[
+                    'price' => self::FEE,
+                    'quantity' => 1,
+                    'name' => 'Transaction Fee',
+                    'category' => 'fee'
+                ]],
+                $this->mapTicketsToItems($order->tickets),
+                $this->mapRegistrationsToItems($order->registrations)
             ),
             'customer_details' => [
-                'email' => $user->email,
+                'email' => $user->email
             ],
             'page_expiry' => [
                 'duration' => 1,
                 'unit' => 'days'
             ],
             'callbacks' => [
-                'finish' => route('user.payment.fallback'),
+                'finish' => route('user.payment.fallback.midtrans'),
                 'unfinish' => route('user.order.index')
             ]
         ];
 
         $transaction = Snap::createTransaction($params);
-        $payment = new Payment([
-            'amount' => $order->total_price,
-            'fee' => $orderFee,
+
+        call_user_func_array($beforeCallback, [
+            $order,
+            [
+                'link' => $transaction->redirect_url,
+                'fee' => self::FEE
+            ]
+        ]);
+
+        logger()->channel('stack')->info('Payment snap', [
             'link' => $transaction->redirect_url
         ]);
 
-        logger()->channel('stack')->debug('Payment has been created', [
-            'user_id' => $user->uuid,
-            'payment_id' => $payment->id
-        ]);
-
-        $order->payment()->save($payment);
-        return redirect()->away($payment->link);
+        return Redirect::away($transaction->redirect_url);
     }
 
-    public function handleOnCallback(callable $afterCallback)
+    public function handleNotification(callable $afterCallback): array
     {
         try {
             $notification = new Notification();
@@ -93,147 +101,119 @@ class MidtransPaymentService
             $trxStatus = $notification->transaction_status;
             $trxFraudStatus = $notification->fraud_status;
             $trxSigKey = $notification->signature_key;
+            $trxPaymentType = $notification->payment_type;
+            $trxStatusCode = $notification->status_code;
+            $trxGrossAmount = $notification->gross_amount;
 
             $orderId = explode('#', $notification->order_id)[0];
-            $paymentType = $notification->payment_type;
-            $statusCode = $notification->status_code;
-            $grossAmount = $notification->gross_amount;
 
-            logger()->channel('stack')->debug('Notification has been received', [
+            logger()->channel('stack')->info('Midtrans notification received', [
                 'order_id' => $orderId,
                 'trx_id' => $trxId,
                 'trx_status' => $trxStatus
             ]);
 
-            if (!$this->verifySignature(
+            if (!$this->signatureIsValid(
                 $trxSigKey,
                 $notification->order_id,
-                $statusCode,
-                $grossAmount
+                $trxStatusCode,
+                $trxGrossAmount
             )) {
-                throw new \Exception('Invalid payment signature key');
+                throw new \Exception('Invalid signature key provided');
             }
 
             $order = Order::where('reference', $orderId)->firstOrFail();
-            $payment = $order->payment;
 
+            $payment = $order->payment;
             $payment->transaction_id = $trxId;
-            $payment->method = $paymentType;
+            $payment->method = $trxPaymentType;
+
+            $meta = [
+                'trx_id' => $trxId,
+                'trx_status' => $trxStatus,
+                'order_status' => OrderStatusEnum::Pending,
+                'payment_status' => PaymentStatusEnum::Pending
+            ];
 
             switch ($trxStatus) {
                 case self::STATUS_CAPTURE:
                 case self::STATUS_SETTLEMENT:
-                    if ($trxFraudStatus == self::FRAUD_CHALLENGE) {
-                        $order->status = OrderStatusEnum::Paid;
-                        $payment->status = PaymentStatusEnum::Challenge;
-
-                        logger()->channel('stack')->info('Payment success', [
-                            'order_id' => $orderId,
-                            'user_id' => $order->user->uuid,
-                            'trx_id' => $trxId,
-                        ]);
+                    if ($trxFraudStatus == self::FRAUD_ACCEPT) {
+                        $meta['order_status'] = OrderStatusEnum::Paid;
+                        $meta['payment_status'] = PaymentStatusEnum::Success;
                         break;
-                    } else {
-                        $order->status = OrderStatusEnum::Paid;
-                        $payment->status = PaymentStatusEnum::Success;
-
-                        logger()->channel('stack')->info('Payment success', [
-                            'order_id' => $orderId,
-                            'user_id' => $order->user->uuid,
-                            'trx_id' => $trxId,
-                        ]);
+                    } else if ($trxFraudStatus == self::FRAUD_CHALLENGE) {
+                        $meta['order_status'] = OrderStatusEnum::Paid;
+                        $meta['payment_status'] = PaymentStatusEnum::Challenge;
                         break;
                     }
                 case self::STATUS_CANCEL:
-                    $payment->status = PaymentStatusEnum::Canceled;
-
-                    logger()->channel('stack')->info('Payment status changed',  [
-                        'order_id' => $orderId,
-                        'trx_id' => $trxId,
-                        'status' => $payment->status
-                    ]);
+                    $meta['payment_status'] = PaymentStatusEnum::Canceled;
                     break;
                 case self::STATUS_DENY:
-                    $payment->status = PaymentStatusEnum::Failed;
-
-                    logger()->channel('stack')->warning('Payment status changed',  [
-                        'order_id' => $orderId,
-                        'trx_id' => $trxId,
-                        'status' => $payment->status
-                    ]);
+                    $meta['payment_status'] = PaymentStatusEnum::Failed;
                     break;
                 case self::STATUS_EXPIRE:
-                    $payment->status = PaymentStatusEnum::Expired;
-
-                    logger()->channel('stack')->info('Payment status changed',  [
-                        'order_id' => $orderId,
-                        'trx_id' => $trxId,
-                        'status' => $payment->status
-                    ]);
+                    $meta['payment_status'] = PaymentStatusEnum::Expired;
                     break;
                 case self::STATUS_FAILURE:
-                    $payment->status = PaymentStatusEnum::Failed;
-
-                    logger()->channel('stack')->info('Payment status changed',  [
-                        'order_id' => $orderId,
-                        'trx_id' => $trxId,
-                        'status' => $payment->status
-                    ]);
+                    $meta['payment_status'] = PaymentStatusEnum::Failed;
                     break;
-                default:
-                    $payment->status = PaymentStatusEnum::Pending;
-
-                    logger()->channel('stack')->info('Payment status changed',  [
-                        'order_id' => $orderId,
-                        'trx_id' => $trxId,
-                        'status' => $payment->status
-                    ]);
-                    break;
+                default: break;
             }
 
-            if ($order->status === OrderStatusEnum::Paid) {
+            if ($meta['order_status'] == OrderStatusEnum::Paid) {
                 Mail::to($order->user->email)->send(new SuccessPayment($order));
 
-                logger()->channel('email')->info('Email sent successfully', [
+                logger()->channel('email')->info('New email has been sent', [
                     'from' => env('MAIL_FROM_ADDRESS'),
                     'to' => $order->user->email
                 ]);
             }
 
+            call_user_func_array($afterCallback, [
+                $order,
+                $payment,
+                $meta,
+            ]);
+
+            $order->status = $meta['order_status'];
+            $payment->status = $meta['payment_status'];
+
             $order->save();
             $payment->save();
 
-            call_user_func_array($afterCallback, [
-                $order,
-                $payment
-            ]);
+            logger()->channel('stack')->info(
+                'Notification has been processed',
+                $meta
+            );
 
             return [
-                'message' => 'Notification received',
+                'message' => 'Midtrans notification received',
                 'status' => Response::HTTP_OK
             ];
         } catch (ModelNotFoundException) {
             logger()->channel('error')->error('Invalid order id provided', [
-                'order_id' => $orderId,
+                'order_id' => $orderId
             ]);
 
             return [
-                'message' => 'Invalid order id',
+                'message' => 'Invalid order id provided',
                 'status' => Response::HTTP_BAD_REQUEST
             ];
-        } catch (\Throwable $exception) {
+        } catch (\Exception|\Throwable $exception) {
             logger()->channel('error')->error($exception->getMessage(), [
-                'order_id' => $orderId,
+                'order_id' => $orderId
             ]);
 
             return [
                 'message' => $exception->getMessage(),
-                'status' => Response::HTTP_SERVICE_UNAVAILABLE
+                'status' => Response::HTTP_SERVICE_UNAVAILABLE,
             ];
         }
     }
 
-    private function transformRegistrationsToItemsList(Collection $registrations)
+    private function mapRegistrationsToItems(Collection $registrations)
     {
         return $registrations->map(function (Registration $registration) {
             return [
@@ -251,7 +231,7 @@ class MidtransPaymentService
         })->values()->all();
     }
 
-    private function transformTicketsToItemsList(Collection $tickets)
+    private function mapTicketsToItems(Collection $tickets)
     {
         return $tickets->map(function (Ticket $ticket) {
             return [
@@ -269,7 +249,7 @@ class MidtransPaymentService
         })->values()->all();
     }
 
-    private function verifySignature(
+    private function signatureIsValid(
         string $sigKey,
         string $orderId,
         string $statusCode,

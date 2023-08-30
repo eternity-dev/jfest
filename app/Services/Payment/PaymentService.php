@@ -2,10 +2,12 @@
 
 namespace App\Services\Payment;
 
+use App\Services\Payment\Providers\MidtransProvider;
+
 class PaymentService
 {
     private array $handlers = [
-        'midtrans' => MidtransPaymentService::class
+        'midtrans' => MidtransProvider::class
     ];
 
     public function redirect(string $handler, ...$args)
@@ -20,7 +22,7 @@ class PaymentService
     {
         if ($this->isVerifiedHandler($handler)) {
             $handler = new $this->handlers[$handler];
-            return $handler->handleOnCallback($afterCallback);
+            return $handler->handleNotification($afterCallback);
         }
     }
 

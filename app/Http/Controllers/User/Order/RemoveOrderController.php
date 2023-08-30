@@ -17,7 +17,15 @@ class RemoveOrderController extends Controller
 
             $ticket->order->save();
             $ticket->delete();
-            $request->session()->flash('message', 'Item has been removed from your orders list');
+
+            logger()->channel('stack')->info('Ticket removed from order', [
+                'order_id' => $ticket->order->reference
+            ]);
+
+            $request->session()->flash(
+                'message',
+                'Item has been removed from your orders list'
+            );
         } catch (\Throwable $exception) {
             logger()->channel('error')->error($exception->getMessage(), [
                 'user_id' => $request->user()->id,
@@ -38,7 +46,15 @@ class RemoveOrderController extends Controller
 
             $registration->order->save();
             $registration->delete();
-            $request->session()->flash('message', 'Registration has been canceled from your orders list');
+
+            logger()->channel('stack')->info('Registration removed from order', [
+                'order_id' => $registration->order->reference
+            ]);
+
+            $request->session()->flash(
+                'message',
+                'Registration has been canceled from your orders list'
+            );
         } catch (\Throwable $exception) {
             logger()->channel('error')->error($exception->getMessage(), [
                 'user_id' => $request->user()->id,
