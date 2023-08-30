@@ -183,7 +183,8 @@ export default function TeamSection({
                                         </RemoveButton>
                                     </div>
                                 ))}
-                            {values.teamMembers.length < maxParticipants && (
+                            {values.teamMembers.length <
+                                maxParticipants - 1 && (
                                 <Button
                                     type="button"
                                     color="light"

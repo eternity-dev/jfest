@@ -67,7 +67,11 @@ function OrderRegistrationPage({ data, links: { submitUrl }, meta }) {
         instagram: null,
         nickname: null,
         teamName: null,
-        teamMembers: new Array(data.min_participants).fill({
+        teamMembers: new Array(
+            data.min_participants === data.max_participants
+                ? data.min_participants - 1
+                : data.min_participants
+        ).fill({
             name: "",
             instagram: null,
             nickname: null,
