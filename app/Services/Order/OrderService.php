@@ -4,28 +4,28 @@ namespace App\Services\Order;
 
 use App\Models\Activity;
 use App\Models\Competition;
-use App\Models\Order;
 use App\Models\User;
+use Illuminate\Support\Collection;
 
 class OrderService
 {
     public function createRegistrationOrder(User $user, Competition $competition, array $data)
     {
-        return (new CreateNewRegistrationOrderService())->handle($user, $competition, $data);
+        return (new CreateRegistrationService)->handle($user, $competition, $data);
     }
 
     public function createTicketsOrder(User $user, Activity $activity, int $amount)
     {
-        return (new CreateNewTicketsOrderService())->handle($user, $activity, $amount);
+        return (new CreateTicketService)->handle($user, $activity, $amount);
     }
 
-    public function remapTicketOrder(Order|null &$order)
+    public function remapTickets(Collection &$tickets)
     {
-        return (new RemapTicketOrderService())->handle($order);
+        return (new RemapTicketsService)->handle($tickets);
     }
 
-    public function remapRegistrationOrder(Order|null &$order)
+    public function remapRegistrations(Collection &$registrations)
     {
-        return (new RemapRegistrationOrderService())->handle($order);
+        return (new RemapRegistrationsService)->handle($registrations);
     }
 }

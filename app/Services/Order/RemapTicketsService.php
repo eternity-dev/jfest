@@ -2,17 +2,19 @@
 
 namespace App\Services\Order;
 
-use App\Models\Order;
+use App\Models\Ticket;
+use App\Services\Contract\RemapOrderItems;
+use Illuminate\Support\Collection;
 
-class RemapTicketOrderService
+class RemapTicketsService implements RemapOrderItems
 {
-    public function handle(Order|null &$order)
+    public function handle(Collection|null &$items): void
     {
-        if (is_null($order)) {
+        if (is_null($items)) {
             return;
         }
 
-        $order->tickets->map(function ($ticket) {
+        $items = $items->map(function (Ticket $ticket) {
             $date = $ticket->activity->date;
             $ticket->activity->dateStr = $date->diffForHumans();
             $ticket->remove_url = route('user.order.activity.remove', [

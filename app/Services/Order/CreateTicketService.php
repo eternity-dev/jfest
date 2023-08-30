@@ -9,7 +9,7 @@ use App\Models\Ticket;
 use App\Models\User;
 use Illuminate\Support\Collection;
 
-class CreateNewTicketsOrderService
+class CreateTicketService
 {
     public function handle(User $user, Activity $activity, int $amount)
     {

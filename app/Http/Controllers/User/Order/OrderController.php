@@ -22,8 +22,10 @@ class OrderController extends Controller
             'registrations' => ['competition']
         ])->latest()->first();
 
-        $orderService->remapTicketOrder($order);
-        $orderService->remapRegistrationOrder($order);
+        if (!is_null($order)) {
+            $orderService->remapTickets($order->tickets);
+            $orderService->remapRegistrations($order->registrations);
+        }
 
         return Inertia::render('order/index', [
             'data' => $order,

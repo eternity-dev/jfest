@@ -12,7 +12,7 @@ use App\Models\TeamMember;
 use App\Models\Ticket;
 use App\Models\User;
 
-class CreateNewRegistrationOrderService
+class CreateRegistrationService
 {
     public const INDIVIDUAL_COUNT = 1;
     public const TICKET_SLUG = 'japanese-festival-7';
