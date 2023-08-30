@@ -68,7 +68,7 @@ export default function DetailCard({ totalPrice, redirectToPaymentUrl }) {
                         >
                             Admin Fee
                         </Text>
-                        <Text css={{ fontSize: "1.25rem" }}>Rp 10.000</Text>
+                        <Text css={{ fontSize: "1.25rem" }}>Rp 2.000</Text>
                     </li>
                 </ul>
             </div>
