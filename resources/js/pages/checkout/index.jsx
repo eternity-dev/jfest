@@ -50,6 +50,8 @@ function CheckoutPage({ data, links: { redirectToPaymentUrl }, meta }) {
         flatAndGroupObjectsBy(data.registrations, "price")
     );
 
+    console.log(tickets);
+
     return (
         <>
             {generateMetadata(meta.head)}

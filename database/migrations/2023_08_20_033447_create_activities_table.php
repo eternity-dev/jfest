@@ -1,5 +1,6 @@
 <?php
 
+use App\Models\ActivitySale;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
@@ -13,11 +14,10 @@ return new class extends Migration
     {
         Schema::create('activities', function (Blueprint $table) {
             $table->id();
+            $table->foreignIdFor(ActivitySale::class)->constrained()->cascadeOnDelete();
             $table->string('slug')->unique();
             $table->string('name');
             $table->text('description')->nullable();
-            $table->integer('price');
-            $table->string('price_tag', 20)->nullable();
             $table->string('image_url')->nullable();
             $table->date('date')->nullable();
             $table->date('purchase_opened_at')->useCurrent();

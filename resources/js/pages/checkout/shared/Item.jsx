@@ -57,7 +57,12 @@ export default function Item({ data, type }) {
                 </Text>
             </div>
             <Text>
-                Rp {(data.item.price * data.count).toLocaleString("id-ID")}
+                Rp{" "}
+                {(
+                    (isActivity
+                        ? data.item.activity.sale.price
+                        : data.item.price) * data.count
+                ).toLocaleString("id-ID")}
             </Text>
         </Container>
     );

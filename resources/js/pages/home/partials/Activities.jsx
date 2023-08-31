@@ -76,8 +76,10 @@ const ActivityTag = styled("div", {
 });
 
 export default function Activities({ activities, competitions }) {
-    const [acts, setActs] = useState([...activities, ...competitions]);
+    const [acts] = useState([...activities, ...competitions]);
     const [filteredActs, setFilteredActs] = useState(acts);
+
+    console.log(activities);
 
     const { isAuthenticated } = useAuth();
     const {
@@ -226,24 +228,56 @@ export default function Activities({ activities, competitions }) {
                                         }}
                                     >
                                         Rp{" "}
-                                        {activity.price.toLocaleString("id-ID")}
+                                        {!isActivity
+                                            ? activity.price.toLocaleString(
+                                                  "id-ID"
+                                              )
+                                            : activity.sale.price.toLocaleString(
+                                                  "id-ID"
+                                              )}
                                     </Text>
                                 </ActivityBody>
-                                <Link
-                                    style={{ textDecoration: "none" }}
-                                    onClick={(evt) => {
-                                        evt.preventDefault();
-                                        handleRedirectToOrderPage(
-                                            activity.order_url
-                                        );
-                                    }}
-                                >
-                                    <Button color="light" fullWidth>
-                                        {isActivity
-                                            ? "Order Now"
-                                            : "Register Now"}
-                                    </Button>
-                                </Link>
+                                {isActivity &&
+                                !activity.sale.is_tickets_available ? (
+                                    <div
+                                        className={css({
+                                            display: "flex",
+                                            alignItems: "center",
+                                            justifyContent: "center",
+                                            width: "100%",
+                                            height: "$button-desktop-height",
+                                            "@laptop": {
+                                                height: "$button-laptop-height",
+                                            },
+                                            "@tablet": {
+                                                height: "$button-tablet-height",
+                                            },
+                                            "@mobile": {
+                                                height: "$button-mobile-height",
+                                            },
+                                        }).toString()}
+                                    >
+                                        <Text css={{ color: "$secondary" }}>
+                                            Sold Out
+                                        </Text>
+                                    </div>
+                                ) : (
+                                    <Link
+                                        style={{ textDecoration: "none" }}
+                                        onClick={(evt) => {
+                                            evt.preventDefault();
+                                            handleRedirectToOrderPage(
+                                                activity.order_url
+                                            );
+                                        }}
+                                    >
+                                        <Button color="light" fullWidth>
+                                            {isActivity
+                                                ? "Order Now"
+                                                : "Register Now"}
+                                        </Button>
+                                    </Link>
+                                )}
                             </Activity>
                         </Link>
                     );

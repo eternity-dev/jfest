@@ -21,7 +21,8 @@ class AddNewTicketOrderRequest extends FormRequest
             'amount' => [
                 'required' => 'Field :attribute is required',
                 'integer' => 'Field :attribute must be an integer',
-                'min' => 'Field :attribute value must be at least :min'
+                'min' => 'Field :attribute value must be at least :min',
+                'max' => "You can't buy tickets more than :max tickets at once"
             ]
         ];
     }
@@ -29,7 +30,7 @@ class AddNewTicketOrderRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'amount' => 'required|integer|min:1'
+            'amount' => 'required|integer|min:1|max:10'
         ];
     }
 }

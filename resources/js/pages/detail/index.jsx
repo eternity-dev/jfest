@@ -1,7 +1,5 @@
 import { css, styled } from "@/root/stitches.config";
 
-import { Text } from "@/components/text";
-
 import { generateMetadata } from "@/utils/helper";
 import withNavbarMobile from "@/hooks/hoc/withNavbarMobile";
 
@@ -62,9 +60,14 @@ function DetailPage({ data, links: { orderUrl }, meta }) {
                         />
                         <Divider />
                         <PriceSection
-                            price={data.price}
-                            priceTag={data.price_tag}
+                            price={isActivity ? data.sale.price : data.price}
+                            priceTag={
+                                isActivity ? data.sale.name : data.price_tag
+                            }
                             isActivity={isActivity}
+                            isTicketsAvailable={
+                                isActivity && data.sale.is_tickets_available
+                            }
                             orderUrl={orderUrl}
                         />
                         <Divider />

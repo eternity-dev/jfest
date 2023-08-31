@@ -16,7 +16,7 @@ class CreateTicketService
         try {
             if ($user->orders->isEmpty()) {
                 $order = new Order([
-                    'total_price' => $activity->price * $amount
+                    'total_price' => $activity->sale->price * $amount
                 ]);
 
                 $user->orders()->save($order);
@@ -31,7 +31,7 @@ class CreateTicketService
 
                 if (is_null($order)) {
                     $order = new Order([
-                        'total_price' => $activity->price * $amount
+                        'total_price' => $activity->sale->price * $amount
                     ]);
 
                     $user->orders()->save($order);
@@ -39,7 +39,7 @@ class CreateTicketService
                         $this->generateTickets($user, $activity, $amount)
                     );
                 } else {
-                    $order->total_price = $order->total_price + ($activity->price * $amount);
+                    $order->total_price += ($activity->sale->price * $amount);
 
                     $order->save();
                     $order->tickets()->saveMany(
@@ -72,7 +72,7 @@ class CreateTicketService
             $tickets->push(new Ticket([
                 'activity_id' => $activity->id,
                 'user_id' => $user->uuid,
-                'price' => $activity->price
+                'price' => $activity->sale->price
             ]));
         }
 

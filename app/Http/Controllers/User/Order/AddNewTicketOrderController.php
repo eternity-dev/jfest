@@ -6,6 +6,7 @@ use App\Enums\EventTypeEnum;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Order\AddNewTicketOrderRequest;
 use App\Models\Activity;
+use App\Models\Ticket;
 use App\Services\Order\OrderService;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
@@ -15,6 +16,18 @@ class AddNewTicketOrderController extends Controller
 {
     public function create(Request $request, Activity $activity)
     {
+        if (!$activity->sale->is_tickets_available) {
+            $request->session()->flash(
+                'message',
+                sprintf(
+                    'Tickets for %s already sold out',
+                    $activity->sale->name
+                )
+            );
+
+            return Inertia::location(route('global.home'));
+        }
+
         $activity->type = EventTypeEnum::Activity->value;
 
         return Inertia::render('order/ticket/index', [
@@ -37,6 +50,18 @@ class AddNewTicketOrderController extends Controller
         Activity $activity,
         OrderService $orderService
     ) {
+        if (!$activity->sale->is_tickets_available) {
+            $request->session()->flash(
+                'message',
+                sprintf(
+                    'Tickets for %s already sold out',
+                    $activity->sale->name
+                )
+            );
+
+            return Inertia::location(route('global.home'));
+        }
+
         $amount = $request->only('amount')['amount'];
         $user = $request->user();
 

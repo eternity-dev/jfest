@@ -15,7 +15,7 @@ class CheckoutInfoController extends Controller
     {
         try {
             $order = $order->where('id', $order->id)->with([
-                'tickets' => ['activity:id,name,slug,price'],
+                'tickets' => ['activity' => ['sale']],
                 'registrations' => ['competition:id,name,slug,price']
             ])->first();
 

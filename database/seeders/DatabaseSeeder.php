@@ -5,6 +5,7 @@ namespace Database\Seeders;
 // use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 
 use App\Models\Activity;
+use App\Models\ActivitySale;
 use App\Models\Competition;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Carbon;
@@ -16,13 +17,29 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
+        $sales = collect([
+            new ActivitySale([
+                'unique_id' => 'PS1',
+                'name' => 'Pre-Sale 1',
+                'price' => 30000,
+                'tickets_qty_available' => 100
+            ]),
+            new ActivitySale([
+                'unique_id' => 'PS2',
+                'name' => 'Pre-Sale 2',
+                'price' => 35000
+            ])
+        ])->map(function ($activitySale) {
+            $activitySale->save();
+            return $activitySale;
+        });
+
         collect([
             new Activity([
+                'activity_sale_id' => $sales[0]->id,
                 'name' => 'Japanese Festival 7',
                 'description' => 'Japanese culture special event by JCOS (Japanese Community of STIKOM Bali)',
-                'price' => 30000,
-                'price_tag' => 'pre-sale',
-                'image_url' => 'https://image.google.com/japanese-festival-7.png',
+                'image_url' => null,
                 'date' => Carbon::create(2023, 10, 8),
                 'purchase_opened_at' => Carbon::create(2023, 9, 3),
                 'purchase_closed_at' => Carbon::create(2023, 10, 8)
@@ -44,7 +61,7 @@ class DatabaseSeeder extends Seeder
                 'use_instagram_field' => true,
                 'use_nickname_field' => true,
                 'use_multi_participant' => true,
-                'min_participants' => 0,
+                'min_participants' => 1,
                 'max_participants' => 4,
                 'registration_opened_at' => Carbon::create(2023, 9, 3),
                 'registration_closed_at' => Carbon::create(2023, 9, 17),
@@ -61,8 +78,8 @@ class DatabaseSeeder extends Seeder
                 'use_instagram_field' => true,
                 'use_nickname_field' => true,
                 'use_multi_participant' => false,
-                'min_participants' => 0,
-                'max_participants' => 0,
+                'min_participants' => 1,
+                'max_participants' => 1,
                 'registration_opened_at' => Carbon::create(2023, 9, 3),
                 'registration_closed_at' => Carbon::create(2023, 9, 17),
             ]),
@@ -95,8 +112,8 @@ class DatabaseSeeder extends Seeder
                 'use_instagram_field' => false,
                 'use_nickname_field' => false,
                 'use_multi_participant' => false,
-                'min_participants' => 0,
-                'max_participants' => 0,
+                'min_participants' => 1,
+                'max_participants' => 1,
                 'registration_opened_at' => Carbon::create(2023, 9, 3),
                 'registration_closed_at' => Carbon::create(2023, 9, 17),
             ]),
@@ -112,8 +129,8 @@ class DatabaseSeeder extends Seeder
                 'use_instagram_field' => false,
                 'use_nickname_field' => true,
                 'use_multi_participant' => false,
-                'min_participants' => 0,
-                'max_participants' => 0,
+                'min_participants' => 1,
+                'max_participants' => 1,
                 'registration_opened_at' => Carbon::create(2023, 9, 3),
                 'registration_closed_at' => Carbon::create(2023, 9, 17),
             ]),
