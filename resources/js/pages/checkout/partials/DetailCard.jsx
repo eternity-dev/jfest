@@ -1,4 +1,3 @@
-import { Link } from "@inertiajs/react";
 import { styled } from "@/root/stitches.config";
 
 import { Button } from "@/components/button";
