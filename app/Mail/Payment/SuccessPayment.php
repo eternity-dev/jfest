@@ -20,7 +20,7 @@ class SuccessPayment extends Mailable
     public function envelope(): Envelope
     {
         return new Envelope(
-            subject: 'Payment Success',
+            subject: sprintf('%s - %s', $this->order->reference, 'Successful Payment'),
             metadata: ['order_id' => $this->order->reference]
         );
     }
