@@ -15,8 +15,13 @@ class PaymentNotificationController extends Controller
     {
         try {
             $response = $paymentService->callback('midtrans', function (
-                    Order $order
+                    Order $order,
+                    Payment $payment,
+                    array $meta
                 ) {
+                    $order->status = $meta['order_status'];
+                    $payment->status = $payment['payment_status'];
+
                     $dbTicketsCount = Ticket::count();
                     $currTicketsCount = $order->tickets->count();
 
@@ -45,6 +50,9 @@ class PaymentNotificationController extends Controller
                         $registration->uuid = Str::uuid();
                         $registration->save();
                     });
+
+                    $order->save();
+                    $payment->save();
                 }
             );
 

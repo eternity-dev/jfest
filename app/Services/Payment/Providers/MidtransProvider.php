@@ -178,12 +178,6 @@ class MidtransProvider implements PaymentProvider
                 $meta,
             ]);
 
-            $order->status = $meta['order_status'];
-            $payment->status = $meta['payment_status'];
-
-            $order->save();
-            $payment->save();
-
             logger()->channel('stack')->info(
                 'Notification has been processed',
                 $meta
